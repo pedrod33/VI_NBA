@@ -4,15 +4,17 @@ async function main(page) {
   renderMenu(page);
 
   //load datest
-  const data = await d3.dsv(";", "2022-2023_NBA_Player_Stats.csv", (d) => {
-    return d;
-  });
+  const data = await d3.dsv(
+    ";",
+    ".././data/2022-2023_NBA_Player_Stats.csv",
+    (d) => {
+      return d;
+    }
+  );
 
-  
   //how to get information from dataset
-  console.log(data[0]["Player"])
-  
-  
+  console.log(data[0]["Player"]);
+
   //switch with all pages
   switch (page) {
     case "players":
