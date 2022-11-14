@@ -1,0 +1,19 @@
+/*Below 1344px (Smaller computers) */
+@media (max-width: 84em) {
+}
+
+/*Below 1200px (Tablets on horizontal) */
+@media (max-width: 75em) {
+}
+
+/*Below 944px (Tablets on vertical) */
+@media (max-width: 59em) {
+}
+
+/*Below 784px (Smaller Tablets) */
+@media (max-width: 49em) {
+}
+
+/*Below 560px (Phones) */
+@media (max-width: 35em) {
+}
