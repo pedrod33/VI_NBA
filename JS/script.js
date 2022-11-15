@@ -15,18 +15,8 @@ async function main(page) {
   //switch with all pages
   switch (page) {
     case "home":
-      const nrPlayers = data.length;
-      const teams = [];
-      for (let i = 0; i < nrPlayers; i++) {
-        if (!teams.includes(data[i].Tm)) teams.push(data[i].Tm);
-      }
-
-      console.log("nrPlayers", data.length);
-      console.log("teams", teams);
-      console.log("nrTeams", teams.length);
-
-      //how to get information from dataset
-      console.log(data[0]["Player"]);
+      addNrPlayers(data);
+      addNrTeams(data);
 
       break;
 

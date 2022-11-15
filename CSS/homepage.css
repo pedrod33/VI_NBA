@@ -18,21 +18,25 @@ main > h1 {
   margin-bottom: 6.4rem;
 }
 
-main > h1 > span {
+.introduction {
+  margin-bottom: 12rem;
+}
+
+.introduction > h1 > span {
   color: #fd7e14;
 }
 
-main > p {
+.introduction > p {
   color: #fff;
   font-size: 1.8rem;
   letter-spacing: -0.5px;
 }
 
-main > p.list-paragraph {
+.introduction > p.list-paragraph {
   margin-left: 3rem;
 }
 
-main > p > span {
+.introduction > p > span {
   color: #fd7e14;
   font-weight: bold;
 }
@@ -41,10 +45,11 @@ main > p > span {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2.4rem;
+  gap: 4.8rem;
 }
 
-.card {
+.card:link,
+.card:visited {
   padding: 2.4rem 1.2rem;
   border-radius: 1rem;
   background-color: #3d3d3d;
@@ -52,6 +57,18 @@ main > p > span {
   text-align: center;
   font-size: 2.4rem;
   font-weight: bold;
-  width: 20rem;
-  height: 40rem;
+  width: 25rem;
+  height: 35rem;
+  text-decoration: none;
+  font-size: 2.4rem;
+  transition: all 0.3s;
+}
+
+.card:hover,
+.card:active {
+  color: #fd7e14;
+}
+
+.card > svg {
+  margin: 2.4rem auto;
 }
