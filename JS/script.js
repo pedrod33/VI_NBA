@@ -12,11 +12,24 @@ async function main(page) {
     }
   );
 
-  //how to get information from dataset
-  console.log(data[0]["Player"]);
-
   //switch with all pages
   switch (page) {
+    case "home":
+      const nrPlayers = data.length;
+      const teams = [];
+      for (let i = 0; i < nrPlayers; i++) {
+        if (!teams.includes(data[i].Tm)) teams.push(data[i].Tm);
+      }
+
+      console.log("nrPlayers", data.length);
+      console.log("teams", teams);
+      console.log("nrTeams", teams.length);
+
+      //how to get information from dataset
+      console.log(data[0]["Player"]);
+
+      break;
+
     case "players":
       //LOGIC TODO: inside players page dinamycally
       console.log("players");
