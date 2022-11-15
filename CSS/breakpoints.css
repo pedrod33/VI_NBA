@@ -4,6 +4,9 @@
 
 /*Below 1200px (Tablets on horizontal) */
 @media (max-width: 75em) {
+  .main {
+    grid-template-columns: 22rem 1fr;
+  }
 }
 
 /*Below 944px (Tablets on vertical) */
