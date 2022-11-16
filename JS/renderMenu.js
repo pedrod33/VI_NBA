@@ -57,20 +57,19 @@ function renderMenu(page) {
   menu.append(menu_title);
   const ul_menu = document.createElement("ul");
 
-  for (let i in menu_icons) {
+  for (let menu_item in menu_icons) {
     const a_item = document.createElement("a");
-    a_item.href = menu_icons[i][2];
-    console.log("page", page);
-    console.log("i", i);
+    a_item.href = menu_icons[menu_item][2];
+
     const li_item = document.createElement("li");
-    if (page.includes(i)) {
+    if (menu_item.includes(page)) {
       a_item.className = "menu-option option--active";
     } else {
       a_item.className = "menu-option";
     }
 
     //CREATION OF THE SUBMENU ITEMS THAT CONTAIN A ICON AND THE TEXT THAT IS STORED IN menu_icons
-    a_item.innerHTML = menu_icons[i][1] + menu_icons[i][0];
+    a_item.innerHTML = menu_icons[menu_item][1] + menu_icons[menu_item][0];
     li_item.append(a_item);
     ul_menu.append(li_item);
   }

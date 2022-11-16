@@ -15,22 +15,34 @@ async function main(page) {
   //switch with all pages
   switch (page) {
     case "home":
+      //Add nr players and nr teams to cards on homepage
       addNrPlayers(data);
       addNrTeams(data);
-
       break;
-
     case "players":
-      //LOGIC TODO: inside players page dinamycally
+      //Add form that contains an auto complete input
       autoCompletePlayersName(data);
-
       break;
-
     case "teams":
-      //LOGIC TODO: inside teams page dinamycally
+      //Add cards with all teams
       addTeams(data);
       break;
+    case "player":
+      //TODO: See what is necessary to do in JS
 
+      //get player ID -> Example: Lebron James
+      const playerId = new URLSearchParams(window.location.search).get("id");
+      console.log("player", playerId);
+
+      break;
+    case "team":
+      //TODO: See what is necessary to do in JS
+
+      //get Team ID -> Example: LAL
+      const teamId = new URLSearchParams(window.location.search).get("id");
+      console.log("team", teamId);
+
+      break;
     default:
       break;
   }
