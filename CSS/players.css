@@ -1,0 +1,69 @@
+.main > main > h1 {
+  color: #fff;
+  font-size: 4.8rem;
+  margin-bottom: 9.6rem;
+}
+
+.player_input {
+  width: 50rem;
+  padding: 1.2rem 2.4rem;
+  font-size: 2.2rem;
+  background-color: #ececec;
+  border-radius: 1rem;
+  color: #fd7e14;
+  font-weight: bold;
+  border: 0;
+  margin-bottom: 4.8rem;
+}
+
+.player_input::placeholder {
+  color: rgba(230, 125, 34, 0.8);
+}
+
+.player_input:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.5rem rgba(230, 125, 34, 0.5);
+}
+
+.players_list {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.plist-item {
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.plist-item > a {
+  display: flex;
+}
+
+.plist-item > a:link,
+.plist-item > a:visited {
+  padding: 2.4rem 1.2rem;
+  border-radius: 1rem;
+  background-color: #3d3d3d;
+  text-align: center;
+  text-decoration: none;
+  font-size: 2rem;
+  transition: all 0.3s;
+}
+
+.plist-item > a:hover,
+.plist-item > a:active {
+  box-shadow: 0 0 0 0.2rem rgba(230, 125, 34, 0.8);
+}
+
+.plist-item > a > b {
+  margin: 0;
+  color: #fd7e14;
+}
+
+.plist-item > a > p {
+  margin: 0;
+  color: #fecba1;
+}

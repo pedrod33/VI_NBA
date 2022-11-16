@@ -22,7 +22,8 @@ async function main(page) {
 
     case "players":
       //LOGIC TODO: inside players page dinamycally
-      console.log("players");
+      autoCompletePlayersName(data);
+
       break;
 
     case "teams":

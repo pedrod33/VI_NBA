@@ -17,8 +17,10 @@
     <link href="./CSS/globals.css" rel="stylesheet" />
     <link href="CSS/menu.css" rel="stylesheet" />
     <link href="CSS/index.css" rel="stylesheet" />
+    <link href="CSS/players.css" rel="stylesheet" />
     <link href="CSS/breakpoints.css" rel="stylesheet" />
 
+    <script type="text/javascript" src="http://d3js.org/d3.v6.js"></script>
     <title>NBA+</title>
   </head>
   <body onload="main('players')">
@@ -27,7 +29,18 @@
         <nav>
         </nav>
       -->
-      <main></main>
+      <main>
+        <h1>Players</h1>
+        <form autocomplete="off" class="autocompleteForm">
+          <input
+            class="player_input"
+            placeholder="Search by player name..."
+            type="text"
+            id="player_input"
+          />
+          <ul class="players_list" id="players_list"></ul>
+        </form>
+      </main>
     </div>
 
     <!-- BOOTSTRAP -->
@@ -40,6 +53,7 @@
 
     <!-- MY JS -->
     <script src="./JS/renderMenu.js"></script>
+    <script src="./JS/players.js"></script>
     <script src="./JS/script.js" lang="javascript"></script>
   </body>
 </html>

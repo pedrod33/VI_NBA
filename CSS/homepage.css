@@ -1,15 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@700;900&display=swap");
 
-.main {
-  display: grid;
-  grid-template-columns: 20% 1fr;
-  min-height: 100vh;
-}
-
-main {
-  padding: 4.8rem 2.4rem;
-}
-
 main > h1 {
   color: #fff;
   font-size: 4.8rem;

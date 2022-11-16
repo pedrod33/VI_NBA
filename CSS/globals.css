@@ -46,3 +46,13 @@ body {
   background-color: #16161d;
   min-width: 77rem;
 }
+
+.main {
+  display: grid;
+  grid-template-columns: 20% 1fr;
+  min-height: 100vh;
+}
+
+main {
+  padding: 4.8rem 2.4rem;
+}
