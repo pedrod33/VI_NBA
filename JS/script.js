@@ -28,15 +28,20 @@ async function main(page) {
       addTeams(data);
       break;
     case "player":
-      //TODO: See what is necessary to do in JS
+      //TODO: Create Functions to load d3 visualizations
 
+      //FIXME: Might change when adding multiple player comparations
       //get player ID -> Example: Lebron James
       const playerId = new URLSearchParams(window.location.search).get("id");
-      console.log("player", playerId);
+      //get player Index on the dataset
+      const playerIndexOnDataset = data.findIndex((p) => p.Player === playerId);
+      const playerInfo = data[playerIndexOnDataset];
 
+      addGeneralInfoPlayer(playerInfo);
       break;
     case "team":
-      //TODO: See what is necessary to do in JS
+      //TODO: On teamsData, create functions to do the calculations for teams statistics
+      //TODO: Create Functions to load d3 visualizations
 
       //get Team ID -> Example: LAL
       const teamId = new URLSearchParams(window.location.search).get("id");
