@@ -11,10 +11,16 @@
 
 /*Below 944px (Tablets on vertical) */
 @media (max-width: 59em) {
+  .teams_list {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /*Below 784px (Smaller Tablets) */
 @media (max-width: 49em) {
+  .teams_list {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /*Below 560px (Phones) */

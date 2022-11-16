@@ -28,7 +28,7 @@ async function main(page) {
 
     case "teams":
       //LOGIC TODO: inside teams page dinamycally
-      console.log("teams");
+      addTeams(data);
       break;
 
     default:

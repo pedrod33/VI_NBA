@@ -17,6 +17,7 @@
     <link href="./CSS/globals.css" rel="stylesheet" />
     <link href="CSS/menu.css" rel="stylesheet" />
     <link href="CSS/index.css" rel="stylesheet" />
+    <link href="CSS/teams.css" rel="stylesheet" />
     <link href="CSS/breakpoints.css" rel="stylesheet" />
 
     <script type="text/javascript" src="http://d3js.org/d3.v6.js"></script>
@@ -28,7 +29,18 @@
         <nav>
         </nav>
       -->
-      <main></main>
+      <main>
+        <h1>Teams</h1>
+        <form autocomplete="off" class="autocompleteForm">
+          <input
+            class="team_input"
+            placeholder="Search by team name..."
+            type="text"
+            id="team_input"
+          />
+          <ul class="teams_list" id="teams_list"></ul>
+        </form>
+      </main>
     </div>
 
     <!-- BOOTSTRAP -->
@@ -41,6 +53,8 @@
 
     <!-- MY JS -->
     <script src="./JS/renderMenu.js"></script>
+    <script src="./data/teamsData.js"></script>
+    <script src="./JS/teams.js"></script>
     <script src="./JS/script.js" lang="javascript"></script>
   </body>
 </html>
