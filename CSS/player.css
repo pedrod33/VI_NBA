@@ -40,3 +40,13 @@
 #player_attributes > li > p > a:active {
   color: rgba(230, 125, 34, 1);
 }
+
+#radarPlotContainer {
+  position: relative;
+}
+
+text.title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 200px;
+}
