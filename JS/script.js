@@ -35,17 +35,13 @@ async function main(page) {
       const playerId = new URLSearchParams(window.location.search).get("id");
       //get player Index on the dataset
       const playerIndexOnDataset = data.findIndex((p) => p.Player === playerId);
-      const playerInfo = data[playerIndexOnDataset];
+      const player1Info = data[playerIndexOnDataset];
 
       //FIXME: Remove: ONLY HERE FOR TESTING REASONS
       const player2Info = data[1];
-      const player2Stats = getPlayerStats(player2Info, data);
 
-      //get playerStats
-      const player1Stats = getPlayerStats(playerInfo, data);
-
-      addGeneralInfoPlayer(playerInfo);
-      addRadarPlot(player1Stats, player2Stats);
+      addGeneralInfoPlayer(player1Info);
+      addRadarPlot(data, player1Info, player2Info);
       break;
     case "team":
       //TODO: On teamsData, create functions to do the calculations for teams statistics

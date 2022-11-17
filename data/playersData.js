@@ -1,4 +1,5 @@
 function getPlayerStats(player, allPlayers) {
+  console.log("allPlayers", allPlayers);
   // To convert from 3ps% to
   // outsideScoring rating (0-100),
   // We do an optimistic normalization that subtracts the average to the max, so the values are generally higher

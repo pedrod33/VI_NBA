@@ -33,7 +33,12 @@ function addGeneralInfoPlayer(
   main.insertBefore(header, listPlayerAttributes);
 }
 
-function addRadarPlot(player1, player2 = undefined, player3 = undefined) {
+function addRadarPlot(data, player1, player2 = undefined, player3 = undefined) {
+  //get playerStats
+  const player1Stats = getPlayerStats(player1, data);
+  const player2Stats = player2 ? getPlayerStats(player2, data) : undefined;
+  const player3Stats = player3 ? getPlayerStats(player3, data) : undefined;
+
   // create a tooltip
   const player_tooltip = d3
     .select("#starPlotContainer")
@@ -70,20 +75,22 @@ function addRadarPlot(player1, player2 = undefined, player3 = undefined) {
     color, //Color function
   };
 
-  const axisVariables = Object.keys(player1).map((a) => a);
+  const axisVariables = Object.keys(player1Stats).map((a) => a);
 
   //array that contains the player arrays of information
-  const data = [];
+  const playersStats = [];
+  const labels = [];
 
   //array that contains player 1 information
   const player1Data = [];
   for (let i = 0; i < axisVariables.length; i++) {
     player1Data.push({
       axis: axisVariables[i],
-      value: player1[axisVariables[i]],
+      value: player1Stats[axisVariables[i]],
     });
   }
-  data.push(player1Data);
+  playersStats.push(player1Data);
+  labels.push(player1.Player);
 
   if (player2) {
     //array that contains player 1 information
@@ -91,17 +98,31 @@ function addRadarPlot(player1, player2 = undefined, player3 = undefined) {
     for (let i = 0; i < axisVariables.length; i++) {
       player2Data.push({
         axis: axisVariables[i],
-        value: player2[axisVariables[i]],
+        value: player2Stats[axisVariables[i]],
       });
     }
-    data.push(player2Data);
+    playersStats.push(player2Data);
+    labels.push(player2.Player);
+  }
+  if (player3) {
+    //array that contains player 1 information
+    const player3Data = [];
+    for (let i = 0; i < axisVariables.length; i++) {
+      player3Data.push({
+        axis: axisVariables[i],
+        value: player3Stats[axisVariables[i]],
+      });
+    }
+    playersStats.push(player3Data);
+    labels.push(player2.Player);
   }
 
   drawRadarPlot(
     "#radarPlotContainer",
     starCfg,
     axisVariables,
-    data,
-    player_tooltip
+    playersStats,
+    player_tooltip,
+    labels
   );
 }

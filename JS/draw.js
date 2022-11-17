@@ -1,4 +1,11 @@
-function drawRadarPlot(id, cfg, axisVariables, data, tooltip) {
+function drawRadarPlot(
+  id,
+  cfg,
+  axisVariables,
+  data,
+  tooltip,
+  labels = undefined
+) {
   //Radius of the outermost circle
   const radius = Math.min(cfg.w / 2, cfg.h / 2);
   //The width in radians of each "slice"
@@ -282,41 +289,41 @@ function drawRadarPlot(id, cfg, axisVariables, data, tooltip) {
 
   console.log("data", data);
 
-  if (data.length > 1) {
+  if (data.length > 1 && labels) {
     svg
       .append("rect")
       .style("fill", cfg.color(1))
-      .attr("x", cfg.width + (2 / 3) * cfg.margin)
-      .attr("y", cfg.height / 3)
+      .attr("x", cfg.w + (2 / 3) * cfg.margin)
+      .attr("y", cfg.h / 3)
       .attr("width", 15)
       .attr("height", 15);
     svg
       .append("text")
-      .attr("x", cfg.width + (2 / 3) * cfg.margin + 21)
-      .attr("y", cfg.height / 3 + 11)
+      .attr("x", cfg.w + (2 / 3) * cfg.margin + 21)
+      .attr("y", cfg.h / 3 + 11)
       .attr("text-anchor", "start")
-      .text("1");
+      .text(labels[0]);
   }
 
   svg
     .append("rect")
     .style("fill", cfg.color(0))
-    .attr("x", cfg.width + (2 / 3) * cfg.margin)
-    .attr("y", cfg.height / 3 + 30)
+    .attr("x", cfg.w + (2 / 3) * cfg.margin)
+    .attr("y", cfg.h / 3 + 30)
     .attr("width", 15)
     .attr("height", 15);
   svg
     .append("text")
-    .attr("x", cfg.width + (2 / 3) * cfg.margin + 21)
-    .attr("y", cfg.height / 3 + 41)
+    .attr("x", cfg.w + (2 / 3) * cfg.margin + 21)
+    .attr("y", cfg.h / 3 + 41)
     .attr("text-anchor", "start")
-    .text(2);
+    .text(labels[1]);
 
   // Title
   svg
     .append("text")
     .attr("class", "title")
-    .attr("x", cfg.width / 2 + cfg.margin)
+    .attr("x", cfg.w / 2 + cfg.margin)
     .attr("y", 40)
     .attr("text-anchor", "middle")
     .text("Média das notas dos exames de secundário");
