@@ -10,7 +10,7 @@ function addGeneralInfoPlayer(
   header.textContent = `Player: ${player1.Player}`;
 
   //Create elements with general info
-  const playerTeam = document.createElement("span");
+  const playerTeam = document.createElement("a");
   playerTeam.textContent = getTeam(player1.Tm).name;
   const playerAge = document.createElement("span");
   playerAge.textContent = player1.Age;
@@ -22,13 +22,13 @@ function addGeneralInfoPlayer(
   const playerPositionEl = document.getElementById("player_position");
   const playerAgeEl = document.getElementById("player_age");
 
+  //add href to link
+  playerTeam.href = `./team.html?id=${player1.Tm}`;
+
   //add general info to list elements
   playerTeamEl.appendChild(playerTeam);
   playerPositionEl.appendChild(playerPosition);
   playerAgeEl.appendChild(playerAge);
-
-  //add href to link
-  playerTeamEl.href = `./team.html?id=${player1.Tm}`;
 
   main.insertBefore(header, listPlayerAttributes);
 }
