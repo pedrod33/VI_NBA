@@ -57,20 +57,20 @@ function addRadarPlot(data, player1, player2 = undefined, player3 = undefined) {
   const w = container.offsetWidth - 40 - 40;
   const h = 400 - 40 - 40;
   const margin = 40;
-  const color = d3.scaleOrdinal().range(["#CC333F", "#00A0B0"]);
+  const color = d3.scaleOrdinal().range(["#fcc419", "#c92a2a", "#1864ab"]);
 
   const starCfg = {
     w, //Width of the circle
     h, //Height of the circle
     margin, //The margins of the SVG
-    levels: 2, //How many levels or inner circles should there be drawn
+    levels: 4, //How many levels or inner circles should there be drawn
     maxValue: 100, //What is the value that the biggest circle will represent
     labelFactor: 1.2, //How much farther than the radius of the outer circle should the labels be placed
     wrapWidth: 130, //The number of pixels after which a label needs to be given a new line
     opacityArea: 0.35, //The opacity of the area of the blob
-    dotRadius: 4, //The size of the colored circles of each blog
-    opacityCircles: 0.1, //The opacity of the circles of each blob
-    strokeWidth: 2, //The width of the stroke around each blob
+    dotRadius: 5, //The size of the colored circles of each blog
+    opacityCircles: 0.4, //The opacity of the circles of each blob
+    strokeWidth: 3, //The width of the stroke around each blob
     roundStrokes: true, //If true the area and stroke will follow a round path (cardinal-closed)
     color, //Color function
   };
@@ -114,7 +114,7 @@ function addRadarPlot(data, player1, player2 = undefined, player3 = undefined) {
       });
     }
     playersStats.push(player3Data);
-    labels.push(player2.Player);
+    labels.push(player3.Player);
   }
 
   drawRadarPlot(

@@ -40,7 +40,7 @@ function drawRadarPlot(
   const filter = g.append("defs").append("filter").attr("id", "glow"),
     feGaussianBlur = filter
       .append("feGaussianBlur")
-      .attr("stdDeviation", "2.5")
+      .attr("stdDeviation", "1.5")
       .attr("result", "coloredBlur"),
     feMerge = filter.append("feMerge"),
     feMergeNode_1 = feMerge.append("feMergeNode").attr("in", "coloredBlur"),
@@ -78,15 +78,13 @@ function drawRadarPlot(
     })
     .attr("dy", "0.4em")
     .style("font-size", "10px")
-    .attr("fill", "#737373")
+    .style("font-weight", "bold")
+    .attr("fill", "black")
     .text(function (d, i) {
       return d3.format((cfg.maxValue * d) / cfg.levels);
     });
 
   // ------- Draw the axes ---------
-
-  console.log("axisVariables", axisVariables);
-
   //Create the straight lines radiating outward from the center
   const axis = axisGrid
     .selectAll(".axis")
@@ -272,6 +270,7 @@ function drawRadarPlot(
     .style("fill", "none")
     .style("pointer-events", "all")
     .on("mouseover", function (mouse, i) {
+      console.log("i", i);
       year_to_tooltip = 1;
       if (i.year == 1) year_to_tooltip = 1;
 
@@ -287,37 +286,21 @@ function drawRadarPlot(
       tooltip.style("opacity", 0).style("left", 0).style("top", 0);
     });
 
-  console.log("data", data);
-
-  if (data.length > 1 && labels) {
+  for (let i = 0; i < labels.length; i++) {
     svg
       .append("rect")
-      .style("fill", cfg.color(1))
+      .style("fill", cfg.color(i))
       .attr("x", cfg.w + (2 / 3) * cfg.margin)
-      .attr("y", cfg.h / 3)
+      .attr("y", cfg.h / 3 + 30 * i)
       .attr("width", 15)
       .attr("height", 15);
     svg
       .append("text")
       .attr("x", cfg.w + (2 / 3) * cfg.margin + 21)
-      .attr("y", cfg.h / 3 + 11)
+      .attr("y", cfg.h / 3 + 11 + 30 * i)
       .attr("text-anchor", "start")
-      .text(labels[0]);
+      .text(labels[i]);
   }
-
-  svg
-    .append("rect")
-    .style("fill", cfg.color(0))
-    .attr("x", cfg.w + (2 / 3) * cfg.margin)
-    .attr("y", cfg.h / 3 + 30)
-    .attr("width", 15)
-    .attr("height", 15);
-  svg
-    .append("text")
-    .attr("x", cfg.w + (2 / 3) * cfg.margin + 21)
-    .attr("y", cfg.h / 3 + 41)
-    .attr("text-anchor", "start")
-    .text(labels[1]);
 
   // Title
   svg
@@ -326,16 +309,16 @@ function drawRadarPlot(
     .attr("x", cfg.w / 2 + cfg.margin)
     .attr("y", 40)
     .attr("text-anchor", "middle")
-    .text("Média das notas dos exames de secundário");
+    .text("Players Ratings");
 
-  // Source
-  svg
-    .append("text")
-    .attr("class", "source")
-    .attr("x", cfg.width - cfg.margin / 2)
-    .attr("y", cfg.height + 2 * cfg.margin - 20)
-    .attr("text-anchor", "start")
-    .text("Fonte: PORDATA, 2021");
+  // // Source
+  // svg
+  //   .append("text")
+  //   .attr("class", "source")
+  //   .attr("x", cfg.width - cfg.margin / 2)
+  //   .attr("y", cfg.height + 2 * cfg.margin - 20)
+  //   .attr("text-anchor", "start")
+  //   .text("Fonte: PORDATA, 2021");
 
   /////////////////////////////////////////////////////////
   /////////////////// Helper Function /////////////////////
