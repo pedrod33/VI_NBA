@@ -1,47 +1,128 @@
 function addGeneralInfoPlayer(
-  player1,
+  player1 = undefined,
   player2 = undefined,
   player3 = undefined
 ) {
-  const main = document.getElementById("player_main");
-  const listPlayerAttributes = document.getElementById("player_attributes");
+  //Remove cards if there are not all players
+  if (!player1) removeCard("player_attributes");
+  if (!player2) removeCard("player2_attributes");
+  if (!player3) removeCard("player3_attributes");
 
-  const header = document.createElement("h1");
-  header.textContent = `Player: ${player1.Player}`;
+  /* ADD Names */
+  //get names
+  const player1Name = player1 ? player1.Player : undefined;
+  const player2Name = player2 ? player2.Player : undefined;
+  const player3Name = player3 ? player3.Player : undefined;
 
-  //Create elements with general info
-  const playerTeam = document.createElement("a");
-  playerTeam.textContent = getTeam(player1.Tm).name;
-  const playerAge = document.createElement("span");
-  playerAge.textContent = player1.Age;
-  const playerPosition = document.createElement("span");
-  playerPosition.textContent = player1.Pos;
+  //Create an element that contains the value of the team for each player asked
+  const player1NameEl = associateValueToElement(player1Name, "span");
+  const player2NameEl = associateValueToElement(player2Name, "span");
+  const player3NameEl = associateValueToElement(player3Name, "span");
 
-  //get List elements
-  const playerTeamEl = document.getElementById("player_team");
-  const playerPositionEl = document.getElementById("player_position");
-  const playerAgeEl = document.getElementById("player_age");
+  //add into to the respective card
+  if (player1NameEl) addInfoToCardElement("player1_name", player1NameEl);
+  if (player2NameEl) addInfoToCardElement("player2_name", player2NameEl);
+  if (player3NameEl) addInfoToCardElement("player3_name", player3NameEl);
 
-  //add href to link
-  playerTeam.href = `./team.html?id=${player1.Tm}`;
+  /* ADD TEAMS */
+  //get Teams
+  const player1Team = player1 ? getTeam(player1.Tm).name : undefined;
+  const player2Team = player2 ? getTeam(player2.Tm).name : undefined;
+  const player3Team = player3 ? getTeam(player3.Tm).name : undefined;
 
-  //add general info to list elements
-  playerTeamEl.appendChild(playerTeam);
-  playerPositionEl.appendChild(playerPosition);
-  playerAgeEl.appendChild(playerAge);
+  //Create an element that contains the value of the team for each player asked
+  const player1TeamEl = player1Team
+    ? associateValueToElement(player1Team, "a", `./team.html?id=${player1.Tm}`)
+    : undefined;
+  const player2TeamEl = player2Team
+    ? associateValueToElement(player2Team, "a", `./team.html?id=${player2.Tm}`)
+    : undefined;
+  const player3TeamEl = player3Team
+    ? associateValueToElement(player3Team, "a", `./team.html?id=${player3.Tm}`)
+    : undefined;
 
-  main.insertBefore(header, listPlayerAttributes);
+  //add into to the respective card
+  if (player1TeamEl) addInfoToCardElement("player1_team", player1TeamEl);
+  if (player2TeamEl) addInfoToCardElement("player2_team", player2TeamEl);
+  if (player3TeamEl) addInfoToCardElement("player3_team", player3TeamEl);
+
+  /* ADD AGES */
+  //get Ages
+  const player1Age = player1 ? player1.Age : undefined;
+  const player2Age = player2 ? player2.Age : undefined;
+  const player3Age = player3 ? player3.Age : undefined;
+
+  //Create an element that contains the value of the team for each player asked
+  const player1AgeEl = associateValueToElement(player1Age, "span");
+  const player2AgeEl = associateValueToElement(player2Age, "span");
+  const player3AgeEl = associateValueToElement(player3Age, "span");
+
+  //add into to the respective card
+  if (player1AgeEl) addInfoToCardElement("player1_age", player1AgeEl);
+  if (player2AgeEl) addInfoToCardElement("player2_age", player2AgeEl);
+  if (player3AgeEl) addInfoToCardElement("player3_age", player3AgeEl);
+
+  /* ADD Positions */
+  //get Positions
+  const player1Position = player1 ? player1.Pos : undefined;
+  const player2Position = player2 ? player2.Pos : undefined;
+  const player3Position = player3 ? player3.Pos : undefined;
+
+  //Create an element that contains the value of the team for each player asked
+  const player1PositionEl = associateValueToElement(player1Position, "span");
+  const player2PositionEl = associateValueToElement(player2Position, "span");
+  const player3PositionEl = associateValueToElement(player3Position, "span");
+
+  //add into to the respective card
+  if (player1PositionEl)
+    addInfoToCardElement("player1_position", player1PositionEl);
+  if (player2PositionEl)
+    addInfoToCardElement("player2_position", player2PositionEl);
+  if (player3PositionEl)
+    addInfoToCardElement("player3_position", player3PositionEl);
+
+  //Helper functions
+  function associateValueToElement(attribute, flag = "span", href = "") {
+    if (!attribute) {
+      return;
+    }
+
+    const element = document.createElement(flag);
+    element.textContent = attribute;
+
+    if (flag === "a") element.href = href;
+
+    return element;
+  }
+
+  function addInfoToCardElement(ref, elementToAdd) {
+    const refElement = document.getElementById(ref);
+    refElement.appendChild(elementToAdd);
+  }
+
+  function removeCard(ref) {
+    const refElement = document.getElementById(ref);
+    refElement.style.display = "none";
+  }
 }
 
-function addRadarPlot(data, player1, player2 = undefined, player3 = undefined) {
+function addRadarPlot(
+  data,
+  player1 = undefined,
+  player2 = undefined,
+  player3 = undefined
+) {
   //get playerStats
-  const player1Stats = getPlayerStats(player1, data);
+  const player1Stats = player1 ? getPlayerStats(player1, data) : undefined;
   const player2Stats = player2 ? getPlayerStats(player2, data) : undefined;
   const player3Stats = player3 ? getPlayerStats(player3, data) : undefined;
 
+  //Doesn't render graphic if there are not players
+  if (!player1 && !player2 && !player3) return;
+
   // create a tooltip
   const player_tooltip = d3
-    .select("#starPlotContainer")
+    .select("#radarPlotContainer")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
@@ -54,10 +135,10 @@ function addRadarPlot(data, player1, player2 = undefined, player3 = undefined) {
 
   const container = document.getElementById("radarPlotContainer");
 
-  const w = container.offsetWidth - 40 - 40;
-  const h = 400 - 40 - 40;
-  const margin = 40;
-  const color = d3.scaleOrdinal().range(["#fcc419", "#c92a2a", "#1864ab"]);
+  const w = container.offsetWidth - 20 - 20;
+  const h = 400 - 20 - 20;
+  const margin = 80;
+  const color = d3.scaleOrdinal().range(["#c92a2a", "#51cf66", "#1864ab"]);
 
   const starCfg = {
     w, //Width of the circle
@@ -123,6 +204,7 @@ function addRadarPlot(data, player1, player2 = undefined, player3 = undefined) {
     axisVariables,
     playersStats,
     player_tooltip,
-    labels
+    labels,
+    [player1, player2, player3]
   );
 }

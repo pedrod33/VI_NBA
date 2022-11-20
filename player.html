@@ -29,13 +29,29 @@
         </nav>
       -->
       <main class="player_main" id="player_main">
-        <ul id="player_attributes">
-          <li><p id="player_age">Age:</p></li>
-          <li><p id="player_position">Position:</p></li>
-          <li><p id="player_team">Team:</p></li>
-        </ul>
-        <section id="radarPlotContainer">
-          <h2>Attributes</h2>
+        <section class="players_compare_section">
+          <ul id="player_attributes" class="player_attributes first">
+            <li><p id="player1_name">Name:</p></li>
+            <li><p id="player1_age">Age:</p></li>
+            <li><p id="player1_position">Position:</p></li>
+            <li><p id="player1_team">Team:</p></li>
+          </ul>
+          <ul id="player2_attributes" class="player_attributes second">
+            <li><p id="player2_name">Name:</p></li>
+            <li><p id="player2_age">Age:</p></li>
+            <li><p id="player2_position">Position:</p></li>
+            <li><p id="player2_team">Team:</p></li>
+          </ul>
+          <ul id="player3_attributes" class="player_attributes third">
+            <li><p id="player3_name">Name:</p></li>
+            <li><p id="player3_age">Age:</p></li>
+            <li><p id="player3_position">Position:</p></li>
+            <li><p id="player3_team">Team:</p></li>
+          </ul>
+          <secton class="radarPlot">
+            <h2>Players Attributes Comparison</h2>
+            <div id="radarPlotContainer"></div>
+          </secton>
         </section>
       </main>
     </div>

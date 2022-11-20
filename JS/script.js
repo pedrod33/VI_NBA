@@ -61,7 +61,7 @@ async function main(page) {
         : undefined;
       const player3Info = player3Id ? data[player3IndexOnDataset] : undefined;
 
-      addGeneralInfoPlayer(playerInfo);
+      addGeneralInfoPlayer(playerInfo, player2Info, player3Info);
       addRadarPlot(data, playerInfo, player2Info, player3Info);
       break;
     case "team":

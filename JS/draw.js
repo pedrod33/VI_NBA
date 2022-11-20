@@ -4,7 +4,8 @@ function drawRadarPlot(
   axisVariables,
   data,
   tooltip,
-  labels = undefined
+  labels = undefined,
+  players
 ) {
   //Radius of the outermost circle
   const radius = Math.min(cfg.w / 2, cfg.h / 2);
@@ -79,7 +80,7 @@ function drawRadarPlot(
     .attr("dy", "0.4em")
     .style("font-size", "10px")
     .style("font-weight", "bold")
-    .attr("fill", "black")
+    .attr("fill", "#fff")
     .text(function (d, i) {
       return d3.format((cfg.maxValue * d) / cfg.levels);
     });
@@ -122,13 +123,13 @@ function drawRadarPlot(
     .attr("x", function (d, i) {
       if (i == 1 || i == 4 || i == 6 || i == 9) {
         return (
-          rScale(cfg.maxValue * (cfg.labelFactor + 0.4)) *
-          Math.cos(angleSlice * i - Math.PI / 2)
+          rScale(cfg.maxValue * (cfg.labelFactor + 0.3)) *
+          Math.cos(angleSlice * i - Math.PI / 10)
         );
       }
       if (i == 2 || i == 3 || i == 7 || i == 8) {
         return (
-          rScale(cfg.maxValue * (cfg.labelFactor + 0.22)) *
+          rScale(cfg.maxValue * cfg.labelFactor) *
           Math.cos(angleSlice * i - Math.PI / 2)
         );
       }
@@ -219,7 +220,7 @@ function drawRadarPlot(
     .selectAll(".radarCircle")
     .data(function (d, i) {
       return d.map(function (circle_data) {
-        return { year: i, ...circle_data };
+        return { player: i, ...circle_data };
       });
     })
     .enter()
@@ -233,7 +234,7 @@ function drawRadarPlot(
       return rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
     })
     .style("fill", function (d, i, j) {
-      return cfg.color(d.year);
+      return cfg.color(d.player);
     })
     .style("fill-opacity", 0.8);
 
@@ -254,7 +255,7 @@ function drawRadarPlot(
     .selectAll(".radarInvisibleCircle")
     .data(function (d, i) {
       return d.map(function (circle_data) {
-        return { year: i, ...circle_data };
+        return { player: i, ...circle_data };
       });
     })
     .enter()
@@ -270,16 +271,14 @@ function drawRadarPlot(
     .style("fill", "none")
     .style("pointer-events", "all")
     .on("mouseover", function (mouse, i) {
-      console.log("i", i);
-      year_to_tooltip = 1;
-      if (i.year == 1) year_to_tooltip = 1;
+      const player = players[i.player];
 
       tooltip.style("opacity", 1);
 
       tooltip
-        .html("Ano: " + year_to_tooltip + "<br>Nota: " + i.value)
+        .html("Player: " + player.Player + "<br>" + i.axis + ":" + i.value)
         .style("left", cfg.w / 2 + d3.pointer(mouse)[0] + cfg.margin / 2 + "px")
-        .style("top", d3.pointer(mouse)[1] + 2 * cfg.margin + 10 + "px")
+        .style("top", mouse.clientY - cfg.margin + "px")
         .style("color", "black");
     })
     .on("mouseout", function () {
@@ -290,26 +289,17 @@ function drawRadarPlot(
     svg
       .append("rect")
       .style("fill", cfg.color(i))
-      .attr("x", cfg.w + (2 / 3) * cfg.margin)
-      .attr("y", cfg.h / 3 + 30 * i)
+      .attr("x", cfg.margin)
+      .attr("y", cfg.h + 70 + 30 * i)
       .attr("width", 15)
       .attr("height", 15);
     svg
       .append("text")
-      .attr("x", cfg.w + (2 / 3) * cfg.margin + 21)
-      .attr("y", cfg.h / 3 + 11 + 30 * i)
+      .attr("x", cfg.margin + 21)
+      .attr("y", cfg.h + 70 + 11 + 30 * i)
       .attr("text-anchor", "start")
       .text(labels[i]);
   }
-
-  // Title
-  svg
-    .append("text")
-    .attr("class", "title")
-    .attr("x", cfg.w / 2 + cfg.margin)
-    .attr("y", 40)
-    .attr("text-anchor", "middle")
-    .text("Players Ratings");
 
   // // Source
   // svg
