@@ -133,10 +133,10 @@ function addRadarPlot(
     .style("padding", "5px")
     .style("position", "absolute");
 
-  const container = document.getElementById("radarPlotContainer");
+  // const container = document.getElementById("radarPlotContainer");
 
-  const w = container.offsetWidth - 20 - 20;
-  const h = 400 - 20 - 20;
+  const w = 400 - 40 - 40;
+  const h = 400 - 40 - 40;
   const margin = 80;
   const color = d3.scaleOrdinal().range(["#c92a2a", "#51cf66", "#1864ab"]);
 
@@ -204,7 +204,7 @@ function addRadarPlot(
     axisVariables,
     playersStats,
     player_tooltip,
-    labels,
-    [player1, player2, player3]
+    [player1, player2, player3],
+    labels
   );
 }

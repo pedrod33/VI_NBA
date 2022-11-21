@@ -4,8 +4,8 @@ function drawRadarPlot(
   axisVariables,
   data,
   tooltip,
-  labels = undefined,
-  players
+  players,
+  labels = undefined
 ) {
   //Radius of the outermost circle
   const radius = Math.min(cfg.w / 2, cfg.h / 2);
@@ -289,14 +289,14 @@ function drawRadarPlot(
     svg
       .append("rect")
       .style("fill", cfg.color(i))
-      .attr("x", cfg.margin)
-      .attr("y", cfg.h + 70 + 30 * i)
+      .attr("x", cfg.margin - 50)
+      .attr("y", cfg.h + 100 + 30 * i)
       .attr("width", 15)
       .attr("height", 15);
     svg
       .append("text")
-      .attr("x", cfg.margin + 21)
-      .attr("y", cfg.h + 70 + 11 + 30 * i)
+      .attr("x", cfg.margin - 50 + 21)
+      .attr("y", cfg.h + 100 + 11 + 30 * i)
       .attr("text-anchor", "start")
       .text(labels[i]);
   }
