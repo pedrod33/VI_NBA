@@ -41,7 +41,7 @@ function filterTeams(teams, filter) {
       //Create img element of team
       const teamImg = document.createElement("img");
       teamImg.src = teamInfo.image;
-      teamImg.alt = `Logo of team ${teamInfo.name}`;
+      teamImg.alt = 'Logo of team ${teamInfo.name}';
 
       //Display matched part in bold
       const match = document.createElement("b");

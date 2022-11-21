@@ -53,8 +53,12 @@ async function main(page) {
 
       //get Team ID -> Example: LAL
       const teamId = new URLSearchParams(window.location.search).get("id");
-      console.log("team", teamId);
-
+      let players = [];
+      for (let i = 0; i < data.length; i++) {
+        if(data[i].Tm == teamId) players.push(data[i]);
+      }
+      showTeamHeader(teamId, players)
+      //addEventListener(teamId, data)
       break;
     default:
       break;

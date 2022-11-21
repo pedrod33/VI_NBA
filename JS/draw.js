@@ -372,3 +372,252 @@ function drawRadarPlot(id, cfg, axisVariables, data, tooltip) {
     });
   } //wrap
 } //RadarChart
+
+function drawParallelCoordinatesPlot(){
+  var margin = {top: 30, right: 50, bottom: 10, left: 50},
+  width = 460 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+.append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+.append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+// Parse the Data
+d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/iris.csv", function(data) {
+
+  // Color scale: give me a specie name, I return a color
+  var color = d3.scaleOrdinal()
+    .domain(["setosa", "versicolor", "virginica" ])
+    .range([ "#440154ff", "#21908dff", "#fde725ff"])
+
+  // Here I set the list of dimension manually to control the order of axis:
+  dimensions = ["Petal_Length", "Petal_Width", "Sepal_Length", "Sepal_Width"]
+
+  // For each dimension, I build a linear scale. I store all in a y object
+  var y = {}
+  for (i in dimensions) {
+    name = dimensions[i]
+    y[name] = d3.scaleLinear()
+      .domain( [0,8] ) // --> Same axis range for each group
+      // --> different axis range for each group --> .domain( [d3.extent(data, function(d) { return +d[name]; })] )
+      .range([height, 0])
+  }
+
+  // Build the X scale -> it find the best position for each Y axis
+  x = d3.scalePoint()
+    .range([0, width])
+    .domain(dimensions);
+
+  // Highlight the specie that is hovered
+  var highlight = function(d){
+
+    selected_specie = d.Species
+
+    // first every group turns grey
+    d3.selectAll(".line")
+      .transition().duration(200)
+      .style("stroke", "lightgrey")
+      .style("opacity", "0.2")
+    // Second the hovered specie takes its color
+    d3.selectAll("." + selected_specie)
+      .transition().duration(200)
+      .style("stroke", color(selected_specie))
+      .style("opacity", "1")
+  }
+
+  // Unhighlight
+  var doNotHighlight = function(d){
+    d3.selectAll(".line")
+      .transition().duration(200).delay(1000)
+      .style("stroke", function(d){ return( color(d.Species))} )
+      .style("opacity", "1")
+  }
+
+  // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+  function path(d) {
+      return d3.line()(dimensions.map(function(p) { return [x(p), y[p](d[p])]; }));
+  }
+
+  // Draw the lines
+  svg
+    .selectAll("myPath")
+    .data(data)
+    .enter()
+    .append("path")
+      .attr("class", function (d) { return "line " + d.Species } ) // 2 class for each line: 'line' and the group name
+      .attr("d",  path)
+      .style("fill", "none" )
+      .style("stroke", function(d){ return( color(d.Species))} )
+      .style("opacity", 0.5)
+      .on("mouseover", highlight)
+      .on("mouseleave", doNotHighlight )
+
+  // Draw the axis:
+  svg.selectAll("myAxis")
+    // For each dimension of the dataset I add a 'g' element:
+    .data(dimensions).enter()
+    .append("g")
+    .attr("class", "axis")
+    // I translate this element to its right position on the x axis
+    .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+    // And I build the axis with the call function
+    .each(function(d) { d3.select(this).call(d3.axisLeft().ticks(5).scale(y[d])); })
+    // Add axis title
+    .append("text")
+      .style("text-anchor", "middle")
+      .attr("y", -9)
+      .text(function(d) { return d; })
+      .style("fill", "black")
+
+})
+}
+
+
+//---------------------------------line-graph-------------------------------
+
+function drawLineGraph(data,id){
+  function BoxPlot(data, {
+    x = ([x]) => x, // given d in data, returns the (quantitative) x-value
+    y = ([, y]) => y, // given d in data, returns the (quantitative) y-value
+    width = 640, // outer width, in pixels
+    height = 400, // outer height, in pixels
+    marginTop = 20, // top margin, in pixels
+    marginRight = 30, // right margin, in pixels
+    marginBottom = 30, // bottom margin, in pixels
+    marginLeft = 40, // left margin, in pixels
+    inset = 0.5, // left and right inset
+    insetLeft = inset, // inset for left edge of box, in pixels
+    insetRight = inset, // inset for right edge of box, in pixels
+    xType = d3.scaleLinear, // type of x-scale
+    xDomain, // [xmin, xmax]
+    xRange = [marginLeft, width - marginRight], // [left, right]
+    yType = d3.scaleLinear, // type of y-scale
+    yDomain, // [ymin, ymax]
+    yRange = [height - marginBottom, marginTop], // [bottom, top]
+    thresholds = width / 40, // approximative number of thresholds
+    stroke = "currentColor", // stroke color of whiskers, median, outliers
+    fill = "#ddd", // fill color of boxes
+    jitter = 4, // amount of random jitter for outlier dots, in pixels
+    xFormat, // a format specifier string for the x-axis
+    yFormat, // a format specifier string for the y-axis
+    xLabel, // a label for the x-axis
+    yLabel // a label for the y-axis
+  } = {}) {
+    // Compute values.
+    const X = d3.map(data, x);
+    const Y = d3.map(data, y);
+  
+    // Filter undefined values.
+    const I = d3.range(X.length).filter(i => !isNaN(X[i]) && !isNaN(Y[i]));
+  
+    // Compute the bins.
+    const B = d3.bin()
+        .thresholds(thresholds)
+        .value(i => X[i])
+      (I)
+      .map(bin => {
+        const y = i => Y[i];
+        const min = d3.min(bin, y);
+        const max = d3.max(bin, y);
+        const q1 = d3.quantile(bin, 0.25, y);
+        const q2 = d3.quantile(bin, 0.50, y);
+        const q3 = d3.quantile(bin, 0.75, y);
+        const iqr = q3 - q1; // interquartile range
+        const r0 = Math.max(min, q1 - iqr * 1.5);
+        const r1 = Math.min(max, q3 + iqr * 1.5);
+        bin.quartiles = [q1, q2, q3];
+        bin.range = [r0, r1];
+        bin.outliers = bin.filter(i => Y[i] < r0 || Y[i] > r1);
+        return bin;
+      });
+  
+    // Compute default domains.
+    if (xDomain === undefined) xDomain = [d3.min(B, d => d.x0), d3.max(B, d => d.x1)];
+    if (yDomain === undefined) yDomain = [d3.min(B, d => d.range[0]), d3.max(B, d => d.range[1])];
+  
+    // Construct scales and axes.
+    const xScale = xType(xDomain, xRange).interpolate(d3.interpolateRound);
+    const yScale = yType(yDomain, yRange);
+    const xAxis = d3.axisBottom(xScale).ticks(thresholds, xFormat).tickSizeOuter(0);
+    const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
+  
+    const svg = d3.create("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("viewBox", [0, 0, width, height])
+        .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
+  
+    svg.append("g")
+        .attr("transform", `translate(${marginLeft},0)`)
+        .call(yAxis)
+        .call(g => g.select(".domain").remove())
+        .call(g => g.selectAll(".tick line").clone()
+            .attr("x2", width - marginLeft - marginRight)
+            .attr("stroke-opacity", 0.1))
+        .call(g => g.append("text")
+            .attr("x", -marginLeft)
+            .attr("y", 10)
+            .attr("fill", "currentColor")
+            .attr("text-anchor", "start")
+            .text(yLabel));
+  
+    const g = svg.append("g")
+      .selectAll("g")
+      .data(B)
+      .join("g");
+  
+    g.append("path")
+        .attr("stroke", stroke)
+        .attr("d", d => `
+          M${xScale((d.x0 + d.x1) / 2)},${yScale(d.range[1])}
+          V${yScale(d.range[0])}
+        `);
+  
+    g.append("path")
+        .attr("fill", fill)
+        .attr("d", d => `
+          M${xScale(d.x0) + insetLeft},${yScale(d.quartiles[2])}
+          H${xScale(d.x1) - insetRight}
+          V${yScale(d.quartiles[0])}
+          H${xScale(d.x0) + insetLeft}
+          Z
+        `);
+  
+    g.append("path")
+        .attr("stroke", stroke)
+        .attr("stroke-width", 2)
+        .attr("d", d => `
+          M${xScale(d.x0) + insetLeft},${yScale(d.quartiles[1])}
+          H${xScale(d.x1) - insetRight}
+        `);
+  
+    g.append("g")
+        .attr("fill", stroke)
+        .attr("fill-opacity", 0.2)
+        .attr("stroke", "none")
+        .attr("transform", d => `translate(${xScale((d.x0 + d.x1) / 2)},0)`)
+      .selectAll("circle")
+      .data(d => d.outliers)
+      .join("circle")
+        .attr("r", 2)
+        .attr("cx", () => (Math.random() - 0.5) * jitter)
+        .attr("cy", i => yScale(Y[i]));
+  
+    svg.append("g")
+        .attr("transform", `translate(0,${height - marginBottom})`)
+        .call(xAxis)
+        .call(g => g.append("text")
+            .attr("x", width)
+            .attr("y", marginBottom - 4)
+            .attr("fill", "currentColor")
+            .attr("text-anchor", "end")
+            .text(xLabel));
+  
+    return svg.node();
+  }
+}

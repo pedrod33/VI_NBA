@@ -1,0 +1,7 @@
+.team_main > h1 {
+    font-size: 3.2rem;
+    margin-bottom: 4.8rem;
+    color: #fff;
+    display: flex;
+    height: 100%;
+  }
