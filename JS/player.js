@@ -1,12 +1,56 @@
 function addGeneralInfoPlayer(
+  allPlayers,
   player1 = undefined,
   player2 = undefined,
   player3 = undefined
 ) {
   //Remove cards if there are not all players
-  if (!player1) removeCard("player_attributes");
-  if (!player2) removeCard("player2_attributes");
-  if (!player3) removeCard("player3_attributes");
+  if (!player1) {
+    removeCardInfo("player_attributes");
+    addBtnModal("player_attributes", 1);
+    removeCard("player2_attributes");
+    removeCard("player3_attributes");
+  }
+  if (!player2) {
+    removeCardInfo("player2_attributes");
+    addBtnModal("player2_attributes", 2);
+    removeCard("player3_attributes");
+  }
+  if (!player3) {
+    removeCardInfo("player3_attributes");
+    addBtnModal("player3_attributes", 3);
+  }
+
+  //Add events to the buttons and display only the last one
+  const removeButtons = document.querySelectorAll(".player_remove");
+  for (let i = 0; i < removeButtons.length; i++) {
+    const button = removeButtons[i];
+
+    //Only show the last btn
+    if (i + 1 < removeButtons.length) removeButtons[i].style.display = "none";
+
+    //Add event
+    button.addEventListener("click", () => {
+      const currentURL = window.location.href;
+      //get number to remove
+      const idToRemove = button.id.split("player")[1].split("_")[0];
+
+      //get the id+number to remove
+      const finalIdToRemove = idToRemove === "1" ? "id=" : `id${idToRemove}=`;
+
+      const URLSplitted = currentURL.split("&");
+
+      const elRemoveIndex = URLSplitted.findIndex((part) =>
+        part.startsWith(finalIdToRemove)
+      );
+
+      const elRemoved = URLSplitted.splice(elRemoveIndex, 1);
+
+      window.location.href = URLSplitted.join("&");
+    });
+  }
+
+  removeButtons.forEach((button) => {});
 
   /* ADD Names */
   //get names
@@ -100,9 +144,61 @@ function addGeneralInfoPlayer(
     refElement.appendChild(elementToAdd);
   }
 
+  function removeCardInfo(ref) {
+    const refElement = document.getElementById(ref);
+
+    //remove child elements
+    let childElement = refElement.lastElementChild;
+    while (childElement) {
+      refElement.removeChild(childElement);
+      childElement = refElement.lastElementChild;
+    }
+  }
+
   function removeCard(ref) {
     const refElement = document.getElementById(ref);
+
     refElement.style.display = "none";
+  }
+
+  function addBtnModal(ref, number) {
+    const refElement = document.getElementById(ref);
+
+    //append wrapper for button and label
+    const wrapper = document.createElement("div");
+    wrapper.className = "button_wrapper";
+
+    //append button element that opens modal
+    const button = document.createElement("button");
+    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#fff" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><line x1="40" y1="128" x2="216" y2="128" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="128" y1="40" x2="128" y2="216" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>`;
+    button.className = "button_add_player";
+    button.setAttribute("data-modal-target", "#modal");
+
+    button.addEventListener("click", () => {
+      const modal = document.querySelector(button.dataset.modalTarget);
+      openModal(modal, number);
+    });
+
+    //create Label
+    const label = document.createElement("p");
+    label.textContent = "Add player to compare";
+    label.className = "add_player_label";
+
+    wrapper.appendChild(button);
+    wrapper.append(label);
+    refElement.append(wrapper);
+  }
+
+  function openModal(modal, number = -1) {
+    if (modal == null) return;
+    modal.classList.add("active");
+    overlay.classList.add("active");
+    autoCompletePlayersName(
+      allPlayers,
+      "player_modal_input",
+      "players_modal_list",
+      number
+    );
   }
 }
 
