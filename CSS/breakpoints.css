@@ -1,3 +1,30 @@
+/*Below 1685px */
+@media (max-width: 105em) {
+  .player_attributes {
+    grid-column: span 3;
+  }
+
+  .player_attributes.first {
+    grid-row: 1/2;
+  }
+  .player_attributes.second {
+    grid-row: 2/3;
+  }
+  .player_attributes.third {
+    grid-row: 3/4;
+  }
+
+  .radarPlot {
+    grid-column: 4 / 11;
+    grid-row: 1 / 4;
+  }
+
+  .courtPlot {
+    grid-column: 1 / 11;
+    grid-row: 4 / 7;
+  }
+}
+
 /*Below 1344px (Smaller computers) */
 @media (max-width: 84em) {
 }
@@ -6,6 +33,27 @@
 @media (max-width: 75em) {
   .main {
     grid-template-columns: 22rem 1fr;
+  }
+
+  .player_attributes {
+    grid-column: span 3;
+    padding: 0.6rem 1rem;
+    font-size: 1.2rem;
+  }
+
+  .player_attributes.first {
+    grid-row: 1/2;
+  }
+  .player_attributes.second {
+    grid-row: 1/2;
+  }
+  .player_attributes.third {
+    grid-row: 1/2;
+  }
+
+  .radarPlot {
+    grid-column: 1 / 11;
+    grid-row: 2 / 4;
   }
 }
 
