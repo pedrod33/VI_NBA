@@ -1039,7 +1039,7 @@ function drawLineGraph(data,x_axis,id){
   // Add X axis --> it is a date format
 
   let x = d3.scalePoint()
-      .range([width, 0])
+      .range([0, width])
       .domain(x_axis);
   svg.append("g")
   .attr("transform", `translate(0, ${height})`)
@@ -1048,7 +1048,7 @@ function drawLineGraph(data,x_axis,id){
   // Add Y axis
   const y = d3.scaleLinear()
   .domain([0,40])
-  .range([ height, 0 ]);
+  .range([height, 0]);
   svg.append("g")
   .call(d3.axisLeft(y));
   // color palette
@@ -1059,24 +1059,21 @@ function drawLineGraph(data,x_axis,id){
   let d = width/(x_axis.length-1);
   console.log(data)
   for (let k=0;k<data[x_axis[0]].length;k++){
-    let x_pos = [];
-    let y_pos = [];
+
+    let points = [];
     for (let i=0;i<x_axis.length;i++){
-      y_pos.push(data[x_axis[i]][k])
-      x_pos.push(d*i)
-
+      points.push({'y': height-data[x_axis[i]][k]*height/40,'x': d*i})
     }
-    console.log(y_pos)
-    console.log(x_pos)
+    console.log(points)
 
-    svg.selectAll(".line")
+    svg.append("path")
         .attr("fill", "none")
-        .attr("stroke", function(d){ return color(d[0]) })
+        .attr("stroke", "white")
         .attr("stroke-width", 1.5)
         .attr("d", function(d){
           return d3.line()
-            .x(x => x(x_pos))
-            .y(d => y(y_pos))
+            .x(p => p.x+1)
+            .y(p => p.y)(points)
     })
   }
 }
