@@ -58,6 +58,7 @@ async function main(page) {
         if(data[i].Tm == teamId) players.push(data[i]);
       }
       showTeamHeader(teamId, players)
+      showTeamStats(players)
       //addEventListener(teamId, data)
       break;
     default:

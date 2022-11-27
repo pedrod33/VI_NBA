@@ -1017,7 +1017,7 @@ d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/ir
 }
 
 
-//---------------------------------line-graph-------------------------------
+//---------------------------line-graph---------------------------
 
 
 function drawLineGraph(data,x_axis,id){
@@ -1044,27 +1044,44 @@ function drawLineGraph(data,x_axis,id){
   svg.append("g")
   .attr("transform", `translate(0, ${height})`)
   .call(d3.axisBottom(x).ticks(5));
+  
+  const dkeys = Object.keys(data);
+  let tm = -1;
 
+  for(let i=0;i<x_axis.length;i++){
+    let m = Math.max(...data[x_axis[i]]);
+    console.log(m)
+    if(m > tm && m != NaN){
+      console.log(data[x_axis[i]]);
+      tm=m
+    }
+  }
+  tm = Math.ceil(tm+1);
   // Add Y axis
   const y = d3.scaleLinear()
-  .domain([0,40])
+  .domain([0,tm])
   .range([height, 0]);
   svg.append("g")
   .call(d3.axisLeft(y));
   // color palette
-  const color = d3.scaleOrdinal()
-  .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+  // const color = d3.scaleOrdinal()
+  // .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
 
   // Draw the line
   let d = width/(x_axis.length-1);
-  console.log(data)
   for (let k=0;k<data[x_axis[0]].length;k++){
-
+    svg.append("line")
+      .style("stroke", '#e41a1c')  // colour the line
+      .style("opacity","0.7")
+      .attr("x1", d*k)     // x position of the first end of the line
+      .attr("y1", height)      // y position of the first end of the line
+      .attr("x2", d*k)     // x position of the second end of the line
+      .attr("y2", 0);
+    
     let points = [];
     for (let i=0;i<x_axis.length;i++){
-      points.push({'y': height-data[x_axis[i]][k]*height/40,'x': d*i})
+      points.push({'y': height-data[x_axis[i]][k]*height/tm,'x': d*i})
     }
-    console.log(points)
 
     svg.append("path")
         .attr("fill", "none")
@@ -1075,5 +1092,114 @@ function drawLineGraph(data,x_axis,id){
             .x(p => p.x+1)
             .y(p => p.y)(points)
     })
+  }
+}
+
+//---------------------------drawBoxPlot---------------------------
+function drawBoxPlot(stats, data, id){
+  const margin = {top: 10, right: 30, bottom: 30, left: 60},
+  width = 460 - margin.left - margin.right,
+  height = 300 - margin.top - margin.bottom;
+
+  const svg = d3.select(id)
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .attr("fill","white")
+  .append("g")
+  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  let skeys = Object.keys(stats);
+  let max_val, min_val, med_val, q1_val, q3_val,total_max = -1;
+
+  for(let i = 0;i<Object.keys(stats).length;i++){
+    let d_stats = data[skeys[i]]
+    min_val = d_stats[0]
+    max_val = d_stats[d_stats.length-1]
+    if(max_val>total_max){
+      total_max = max_val
+    }
+    if(d_stats.length%2)
+      med_val = d_stats[Math.floor(d_stats.length/2)]
+    else{
+      med_val = (d_stats[d_stats.length/2]+d_stats[d_stats.length/2-1])/2
+    }
+
+    if(d_stats.length%4){
+      q1_val = d_stats[Math.floor(d_stats.length/4)]
+      q3_val = d_stats[Math.floor(d_stats.length*3/4)]
+
+    }
+    else{
+      q1_val = (d_stats[d_stats.length/4]+d_stats[d_stats.length/4-1])/2
+      q3_val = (d_stats[d_stats.length*3/4]+d_stats[d_stats.length*3/4-1])/2
+
+    }
+    console.log("min:",min_val,"q1:",q1_val,"med:",med_val,"q3:",q3_val,"max:",max_val)
+    stats[skeys[i]]["min"] = min_val;
+    stats[skeys[i]]["q1"] = q1_val;
+    stats[skeys[i]]["med"] = med_val;
+    stats[skeys[i]]["q3"] = q3_val;
+    stats[skeys[i]]["max"] = max_val;
+  }
+  let x = d3.scaleBand()
+  .range([0, width])
+  .domain(skeys);
+  svg.append("g")
+  .attr("transform", `translate(0, ${height})`)
+  .call(d3.axisBottom(x).ticks(5));
+
+// Add Y axis
+total_max = Math.ceil(total_max)
+const y = d3.scaleLinear()
+.domain([0,total_max])
+.range([height, 0]);
+
+svg.append("g")
+.call(d3.axisLeft(y));
+
+drawBox(skeys, stats, total_max, width, height, svg)
+}
+
+
+//auxiliar to drawBoxPlot
+function drawBox(skeys, stats, total_max, width, height, svg){
+  let division = width/skeys.length
+  for(let i = 0;i < skeys.length;i++){
+    svg.append("rect")
+      .attr('x', division/4 + division*i)
+      .attr('y', height - (height*(stats[skeys[i]]["q3"]/total_max)))
+      .attr('width', division/2)
+      .attr('height', height*(stats[skeys[i]]["q3"]-stats[skeys[i]]["q1"])/total_max)
+      .attr('stroke', 'black')
+      .attr('fill', '#69a3b2');
+  
+    svg.append("line")
+      .style("stroke", 'white')  // colour the line
+      .attr("x1", (division/2-division/10)+i*division)     // x position of the first end of the line
+      .attr("y1", height-(stats[skeys[i]]["min"]*height/total_max))      // y position of the first end of the line
+      .attr("x2", (division/2+division/10)+i*division)     // x position of the second end of the line
+      .attr("y2", height-(stats[skeys[i]]["min"]*height/total_max));
+      
+    svg.append("line")
+      .style("stroke", 'white')  // colour the line
+      .attr("x1", (division/2-division/10)+i*division)     // x position of the first end of the line
+      .attr("y1", height-(stats[skeys[i]]["max"]*height/total_max))      // y position of the first end of the line
+      .attr("x2", (division/2+division/10)+i*division)     // x position of the second end of the line
+      .attr("y2", height-(stats[skeys[i]]["max"]*height/total_max));
+  
+    svg.append("line")
+      .style("stroke", 'white')  // colour the line
+      .attr("x1", (division/4)+i*division)     // x position of the first end of the line
+      .attr("y1", height-(stats[skeys[i]]["med"]*height/total_max))      // y position of the first end of the line
+      .attr("x2", (3*division/4)+i*division)     // x position of the second end of the line
+      .attr("y2", height-(stats[skeys[i]]["med"]*height/total_max));
+  
+    svg.append("line")
+      .style("stroke", 'white')  // colour the line
+      .attr("x1", (division/2)+i*division)     // x position of the first end of the line
+      .attr("y1", height-(stats[skeys[i]]["min"]*height/total_max))      // y position of the first end of the line
+      .attr("x2", (division/2)+i*division)     // x position of the second end of the line
+      .attr("y2", height-(stats[skeys[i]]["max"]*height/total_max));
   }
 }
