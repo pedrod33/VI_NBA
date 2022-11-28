@@ -63,6 +63,15 @@ async function main(page) {
 
       addGeneralInfoPlayer(data, playerInfo, player2Info, player3Info);
       addRadarPlot(data, playerInfo, player2Info, player3Info);
+
+      const barPlotFilter = document.getElementById("barPlotFilter");
+      barPlotFilter.addEventListener("change", (e) => {
+        const selectedOption =
+          barPlotFilter.options[barPlotFilter.selectedIndex].value;
+
+        addBarPlot(selectedOption, playerInfo, player2Info, player3Info);
+      });
+
       break;
     case "team":
       //TODO: On teamsData, create functions to do the calculations for teams statistics

@@ -61,15 +61,29 @@
             <h2>Players Attributes Comparison</h2>
             <div id="radarPlotContainer"></div>
           </section>
-          <section class="courtPlot">
+          <section class="barPlot">
+            <h2 id="barPlotTitle"></h2>
+            <select id="barPlotFilter">
+              <option value="insideScoring">Inside Scoring</option>
+              <option value="outsideScoring">Outside Scoring</option>
+              <option value="freeThrow">Free Throw</option>
+              <option value="playmaking">Playmaking</option>
+              <option value="rebounding">Rebounding</option>
+              <option value="blocking">Blocking</option>
+              <option value="stealing">Stealing</option>
+            </select>
+            <div id="barPlot"></div>
+          </section>
+          <!-- <section class="courtPlot">
             <h2>Courts</h2>
             <div id="player1_court" class="player_court first"></div>
             <div id="player2_court" class="player_court second"></div>
             <div id="player3_court" class="player_court third"></div>
-          </section>
+          </section> -->
         </section>
       </main>
 
+      <!-- Modal -->
       <div class="modal" id="modal">
         <div class="modal-header">
           <div class="title">Add Player to compare</div>

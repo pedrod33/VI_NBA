@@ -50,7 +50,7 @@ function addGeneralInfoPlayer(
     });
   }
 
-  removeButtons.forEach((button) => {});
+  // removeButtons.forEach((button) => {});
 
   /* ADD Names */
   //get names
@@ -303,4 +303,141 @@ function addRadarPlot(
     [player1, player2, player3],
     labels
   );
+}
+
+function addBarPlot(
+  filter,
+  player1 = undefined,
+  player2 = undefined,
+  player3 = undefined
+) {
+  const filters = {
+    insideScoring: [{ "2PF": "2 Points Misses" }, { "2P": "2 Points Goals" }],
+    outsideScoring: [{ "3PF": "3 Points Misses" }, { "3P": "3 Points Goals" }],
+    freeThrow: [{ FTF: "Free Throw Misses" }, { FT: "Free Throw Goals" }],
+    playmaking: [{ AST: "Assists" }],
+    rebounding: [{ ORB: "Offensive Rebounds" }, { DRB: "Defensive Rebounds" }],
+    blocking: [{ BLK: "Blocks" }],
+    stealing: [{ STL: "Steals" }],
+  };
+
+  const data = [];
+  const selectedFilters = filters[filter];
+
+  if (player1) {
+    const playerInfo = { Player: player1.Player };
+    selectedFilters.forEach((filter) => {
+      const filterKey = Object.keys(filter)[0];
+      let playerValue = +player1[filterKey];
+
+      if (filterKey === "2PF") playerValue = player1["2PA"] - player1["2P"];
+      if (filterKey === "3PF") playerValue = player1["3PA"] - player1["3P"];
+      if (filterKey === "FTF") playerValue = player1["FTA"] - player1["FT"];
+
+      playerInfo[filterKey] = playerValue;
+    });
+
+    data.push(playerInfo);
+  }
+  if (player2) {
+    const playerInfo = { Player: player2.Player };
+    selectedFilters.forEach((filter) => {
+      const filterKey = Object.keys(filter)[0];
+      let playerValue = +player2[filterKey];
+
+      if (filterKey === "2PF") playerValue = player2["2PA"] - player2["2P"];
+      if (filterKey === "3PF") playerValue = player2["3PA"] - player2["3P"];
+      if (filterKey === "FTF") playerValue = player2["FTA"] - player2["FT"];
+
+      playerInfo[filterKey] = playerValue;
+    });
+
+    data.push(playerInfo);
+  }
+  if (player3) {
+    const playerInfo = { Player: player3.Player };
+    selectedFilters.forEach((filter) => {
+      const filterKey = Object.keys(filter)[0];
+      let playerValue = +player3[filterKey];
+
+      if (filterKey === "2PF") playerValue = player3["2PA"] - player3["2P"];
+      if (filterKey === "3PF") playerValue = player3["3PA"] - player3["3P"];
+      if (filterKey === "FTF") playerValue = player3["FTA"] - player3["FT"];
+
+      playerInfo[filterKey] = playerValue;
+    });
+
+    data.push(playerInfo);
+  }
+
+  console.log("data", data);
+
+  const subgroups = data.map((d) => d.Player);
+  console.log("subgroups", subgroups);
+
+  const groups = Object.keys(data[0]).splice(1);
+  console.log("groups", groups);
+
+  // set the dimensions and margins of the graph
+  // set the dimensions and margins of the graph
+  const margin = { top: 10, right: 30, bottom: 20, left: 50 },
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+  //clear everything inside bar plot Div
+  document.getElementById("barPlot").replaceChildren();
+
+  // append the svg object to the body of the page
+  const svg = d3
+    .select("#barPlot")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Add X axis
+  const x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
+  svg
+    .append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x).tickSize(0));
+
+  // Add Y axis
+  const y = d3.scaleLinear().domain([0, 40]).range([height, 0]);
+  svg.append("g").call(d3.axisLeft(y));
+
+  // Another scale for subgroup position?
+  const xSubgroup = d3
+    .scaleBand()
+    .domain(subgroups)
+    .range([0, x.bandwidth()])
+    .padding([0.05]);
+  // color palette = one color per subgroup
+  const color = d3
+    .scaleOrdinal()
+    .domain(subgroups)
+    .range(["#c92a2a", "#51cf66", "#1864ab"]);
+
+  // // Show the bars
+  svg
+    .append("g")
+    .selectAll("g")
+    // Enter in data = loop group per group
+    .data(selectedFilters)
+    .join("g")
+    .attr("transform", (d) => `translate(${x(Object.keys(d)[0])}, 0)`)
+    .selectAll("rect")
+    .data(function (d) {
+      return subgroups.map(function (key, i) {
+        const attr = Object.keys(d)[0];
+        return { key: key, value: data[i][attr] };
+      });
+    })
+    .join("rect")
+    .attr("x", (d) => xSubgroup(d.key))
+    .attr("y", (d) => y(d.value))
+    .attr("width", xSubgroup.bandwidth())
+    .attr("height", (d) => height - y(d.value))
+    .attr("fill", (d) => color(d.key));
 }

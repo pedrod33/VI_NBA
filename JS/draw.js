@@ -118,8 +118,19 @@ function drawRadarPlot(
     .append("text")
     .attr("class", "legend")
     .style("font-size", "11px")
+    .style("cursor", "pointer")
+    .attr("title", "Click to see in the bar plot below")
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
+    .on("click", (d, key) => {
+      const barPlotFilter = document.getElementById("barPlotFilter");
+
+      barPlotFilter.value = key;
+      console.log("players", players);
+      addBarPlot(key, players[0], players[1], players[2]);
+
+      // barPlotFilter.console.log("entrei", key);
+    })
     .attr("x", function (d, i) {
       if (i == 1 || i == 4 || i == 6 || i == 9) {
         return (
