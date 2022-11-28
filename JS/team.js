@@ -24,11 +24,23 @@ function showTeamHeader(teamId, players){
     line_graph_div.style.display = "inline-block";
     line_graph_div.id = "team_line_graph_id"
     
-    
+    const player_tooltip = d3
+    .select("#"+line_graph_div.id)
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("position", "absolute");
+
     let team_data = individualTeamData(players);
     let statKeys = ["Age","G","MP","2P", "3P", "AST","BLK","FG","FT","STL","TOV","TRB"]
-    drawLineGraph(team_data, statKeys, line_graph_div);
+    drawLineGraph(team_data, statKeys, line_graph_div, player_tooltip);
     team_main.appendChild(line_graph_div);
+
 }
 
 function showTeamStats(players){
@@ -50,8 +62,8 @@ function showTeamStats(players){
     def_div.style.display = "inline-block";
     def_div.style.height = "50%";
 
-    drawBoxPlot(off_stats, team_data,off_div)
-    drawBoxPlot(def_stats, team_data,def_div)
+    drawBoxPlot(off_stats, team_data,off_div, "Offensive Stats")
+    drawBoxPlot(def_stats, team_data,def_div, "Defensive Stats")
     team_main.appendChild(off_div);
     team_main.appendChild(def_div);
 

@@ -1000,7 +1000,7 @@ d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/ir
 //---------------------------line-graph---------------------------
 
 
-function drawLineGraph(data,x_axis,id){
+function drawLineGraph(data,x_axis,id, tooltip){
   // set the dimensions and margins of the graph
   const margin = {top: 10, right: 30, bottom: 30, left: 60},
   width = 460 - margin.left - margin.right,
@@ -1030,9 +1030,7 @@ function drawLineGraph(data,x_axis,id){
 
   for(let i=0;i<x_axis.length;i++){
     let m = Math.max(...data[x_axis[i]]);
-    console.log(m)
     if(m > tm && m != NaN){
-      console.log(data[x_axis[i]]);
       tm=m
     }
   }
@@ -1059,25 +1057,54 @@ function drawLineGraph(data,x_axis,id){
       .attr("y2", 0);
     
     let points = [];
+    let player = {};
     for (let i=0;i<x_axis.length;i++){
       points.push({'y': height-data[x_axis[i]][k]*height/tm,'x': d*i})
-    }
 
+    }
+    const dkeys = Object.keys(data);
+    for (let i=0;i<dkeys.length;i++){
+      player[dkeys[i]] = data[dkeys[i]][k];
+    }
     svg.append("path")
-        .attr("fill", "none")
-        .attr("stroke", "white")
-        .attr("stroke-width", 1.5)
-        .attr("d", function(d){
-          return d3.line()
-            .x(p => p.x+1)
-            .y(p => p.y)(points)
+    .attr("fill", "none")
+    .attr("stroke", "white")
+    .attr("stroke-width", 1.5)
+    .attr("id","player"+player["Player"])
+    .attr("d", function(d){
+      return d3.line()
+      .x(p => p.x+1)
+      .y(p => p.y)(points)
     })
+    .on("mouseover", function (mouse, i) {
+      d3.select(this)
+      .attr("stroke","red")
+      .attr("stroke-width", 3)
+      console.log(player.Player)
+      tooltip.style("opacity", 1);
+      tooltip
+        .html("Player: " + player["Player"])
+        .style("left", d3.pointer(mouse)[0] + "px")
+        .style("top", d3.pointer(mouse)[1] + "px")
+        .style("color", "black");
+    })
+    .on("mouseout", function () {
+      d3.select(this)
+      .attr("stroke","white")
+      .attr("stroke-width", 1.5)
+
+      tooltip.style("opacity", 0).style("left", 0).style("top", 0);
+    })
+    .on("click", function(event) {
+      location.href = "player.html?id="+player["Player"]
+      event.stopPropagation();
+    });
   }
 }
 
 //---------------------------drawBoxPlot---------------------------
-function drawBoxPlot(stats, data, id){
-  const margin = {top: 10, right: 30, bottom: 30, left: 60},
+function drawBoxPlot(stats, data, id, title){
+  const margin = {top: 20, right: 30, bottom: 30, left: 60},
   width = 460 - margin.left - margin.right,
   height = 300 - margin.top - margin.bottom;
 
@@ -1089,6 +1116,13 @@ function drawBoxPlot(stats, data, id){
   .append("g")
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
+  svg.append("text")
+  .text(title)
+  .attr("x",width/2)
+  .attr("y",0)
+  .attr("text-anchor","middle")
+  .style("font-size","20px")
+  .style("fill","white");
   let skeys = Object.keys(stats);
   let max_val, min_val, med_val, q1_val, q3_val,total_max = -1;
 
@@ -1115,7 +1149,6 @@ function drawBoxPlot(stats, data, id){
       q3_val = (d_stats[d_stats.length*3/4]+d_stats[d_stats.length*3/4-1])/2
 
     }
-    console.log("min:",min_val,"q1:",q1_val,"med:",med_val,"q3:",q3_val,"max:",max_val)
     stats[skeys[i]]["min"] = min_val;
     stats[skeys[i]]["q1"] = q1_val;
     stats[skeys[i]]["med"] = med_val;
