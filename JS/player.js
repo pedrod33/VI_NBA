@@ -313,24 +313,36 @@ function addBarPlot(
 ) {
   const filters = {
     insideScoring: {
-      attr: [{ "2PF": "2 Points Misses" }, { "2P": "2 Points Goals" }],
+      attr: [
+        { "2PF": "Avg. 2 Points Misses" },
+        { "2P": "Avg. 2 Points Goals" },
+      ],
       name: "Inside Scoring",
     },
     outsideScoring: {
-      attr: [{ "3PF": "3 Points Misses" }, { "3P": "3 Points Goals" }],
+      attr: [
+        { "3PF": "Avg. 3 Points Misses" },
+        { "3P": "Avg. 3 Points Goals" },
+      ],
       name: "Outside Scoring",
     },
     freeThrow: {
-      attr: [{ FTF: "Free Throw Misses" }, { FT: "Free Throw Goals" }],
+      attr: [
+        { FTF: "Avg. Free Throw Misses" },
+        { FT: "Avg. Free Throw Goals" },
+      ],
       name: "Free Throw",
     },
-    playmaking: { attr: [{ AST: "Assists" }], name: "Playmaking" },
+    playmaking: { attr: [{ AST: "Avg. Assists" }], name: "Playmaking" },
     rebounding: {
-      attr: [{ ORB: "Offensive Rebounds" }, { DRB: "Defensive Rebounds" }],
+      attr: [
+        { ORB: "Avg. Offensive Rebounds" },
+        { DRB: "Avg. Defensive Rebounds" },
+      ],
       name: "Rebounding",
     },
-    blocking: { attr: [{ BLK: "Blocks" }], name: "Blocking" },
-    stealing: { attr: [{ STL: "Steals" }], name: "Stealing" },
+    blocking: { attr: [{ BLK: "Avg. Blocks" }], name: "Blocking" },
+    stealing: { attr: [{ STL: "Avg. Steals" }], name: "Stealing" },
   };
 
   const data = [];
@@ -448,6 +460,48 @@ function addBarPlot(
     .domain(subgroups)
     .range(["#c92a2a", "#51cf66", "#1864ab"]);
 
+  // ----------------
+  // Create a tooltip
+  // ----------------
+  const tooltip = d3
+    .select("#barPlot")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px");
+
+  // Three function that change the tooltip when user hover / move / leave a cell
+  // Three function that change the tooltip when user hover / move / leave a cell
+  const mouseover = function (event, d) {
+    console.log("event", event);
+    const subgroupName = d.key;
+    const subgroupValue = d.value;
+
+    tooltip
+      .html(
+        "Name: " +
+          subgroupName +
+          "<br>" +
+          "Value: " +
+          Number.parseFloat(subgroupValue).toFixed(1)
+      )
+      .style("opacity", 1)
+      .style("color", "#000");
+  };
+  const mousemove = function (event, d) {
+    tooltip
+      .style("transform", "translateY(-55%)")
+      .style("left", event.x / 2 + "px")
+      .style("top", event.y / 2 - 30 + "px");
+  };
+  const mouseleave = function (event, d) {
+    tooltip.style("opacity", 0);
+  };
+
   // // Show the bars
   svg
     .append("g")
@@ -468,12 +522,15 @@ function addBarPlot(
     .attr("y", (d) => y(d.value))
     .attr("width", xSubgroup.bandwidth())
     .attr("height", (d) => height - y(d.value))
-    .attr("fill", (d) => color(d.key));
+    .attr("fill", (d) => color(d.key))
+    .on("mouseover", mouseover)
+    .on("mousemove", mousemove)
+    .on("mouseleave", mouseleave);
 
   for (let i = 0; i < subgroups.length; i++) {
     svg
       .append("rect")
-      .style("fill", color(i))
+      .style("fill", color(subgroups[i]))
       .attr("x", width - margin.right + 120)
       .attr("y", height / 2 + 30 * i)
       .attr("width", 15)
