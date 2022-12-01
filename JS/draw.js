@@ -118,21 +118,18 @@ function drawRadarPlot(
     .append("text")
     .attr("class", "legend")
     .style("font-size", "11px")
+    .style("cursor", "pointer")
+    .attr("title", "Click to see in the bar plot below")
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
+    .on("click", (d, key) => {
+      const barPlotFilter = document.getElementById("barPlotFilter");
+
+      barPlotFilter.value = key;
+      console.log("players", players);
+      addBarPlot(key, players[0], players[1], players[2]);
+    })
     .attr("x", function (d, i) {
-      if (i == 1 || i == 4 || i == 6 || i == 9) {
-        return (
-          rScale(cfg.maxValue * (cfg.labelFactor + 0.3)) *
-          Math.cos(angleSlice * i - Math.PI / 10)
-        );
-      }
-      if (i == 2 || i == 3 || i == 7 || i == 8) {
-        return (
-          rScale(cfg.maxValue * cfg.labelFactor) *
-          Math.cos(angleSlice * i - Math.PI / 2)
-        );
-      }
       return (
         rScale(cfg.maxValue * cfg.labelFactor) *
         Math.cos(angleSlice * i - Math.PI / 2)
@@ -289,27 +286,19 @@ function drawRadarPlot(
     svg
       .append("rect")
       .style("fill", cfg.color(i))
-      .attr("x", cfg.margin - 50)
-      .attr("y", cfg.h + 100 + 30 * i)
+      .attr("x", cfg.w + cfg.margin + 10)
+      .attr("y", cfg.h + 75 + 30 * i)
       .attr("width", 15)
       .attr("height", 15);
     svg
       .append("text")
-      .attr("x", cfg.margin - 50 + 21)
-      .attr("y", cfg.h + 100 + 11 + 30 * i)
+      .attr("x", cfg.w + cfg.margin + 10 + 21)
+      .attr("y", cfg.h + 75 + 11 + 30 * i)
       .attr("text-anchor", "start")
       .text(labels[i]);
   }
 
   // // Source
-  // svg
-  //   .append("text")
-  //   .attr("class", "source")
-  //   .attr("x", cfg.width - cfg.margin / 2)
-  //   .attr("y", cfg.height + 2 * cfg.margin - 20)
-  //   .attr("text-anchor", "start")
-  //   .text("Fonte: PORDATA, 2021");
-
   /////////////////////////////////////////////////////////
   /////////////////// Helper Function /////////////////////
   /////////////////////////////////////////////////////////

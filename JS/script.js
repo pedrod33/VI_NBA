@@ -21,7 +21,7 @@ async function main(page) {
       break;
     case "players":
       //Add form that contains an auto complete input
-      autoCompletePlayersName(data);
+      autoCompletePlayersName(data, "player_input", "players_list");
       break;
     case "teams":
       //Add cards with all teams
@@ -61,8 +61,19 @@ async function main(page) {
         : undefined;
       const player3Info = player3Id ? data[player3IndexOnDataset] : undefined;
 
-      addGeneralInfoPlayer(playerInfo, player2Info, player3Info);
+      addGeneralInfoPlayer(data, playerInfo, player2Info, player3Info);
       addRadarPlot(data, playerInfo, player2Info, player3Info);
+
+      //add Bar Plot with the default option
+      addBarPlot("insideScoring", playerInfo, player2Info, player3Info);
+      const barPlotFilter = document.getElementById("barPlotFilter");
+      barPlotFilter.addEventListener("change", (e) => {
+        const selectedOption =
+          barPlotFilter.options[barPlotFilter.selectedIndex].value;
+
+        addBarPlot(selectedOption, playerInfo, player2Info, player3Info);
+      });
+
       break;
     case "team":
       //TODO: On teamsData, create functions to do the calculations for teams statistics
@@ -75,5 +86,29 @@ async function main(page) {
       break;
     default:
       break;
+  }
+
+  //add Event listener to overlay
+  const overlay = document.getElementById("overlay");
+  overlay.addEventListener("click", () => {
+    const modals = document.querySelectorAll(".modal.active");
+    modals.forEach((modal) => {
+      closeModal(modal);
+    });
+  });
+
+  //add event listeners to buttons to close modals
+  const closeModalButtons = document.querySelectorAll("[data-close-button]");
+  closeModalButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const modal = button.closest(".modal");
+      closeModal(modal);
+    });
+  });
+
+  function closeModal(modal) {
+    if (modal == null) return;
+    modal.classList.remove("active");
+    overlay.classList.remove("active");
   }
 }
