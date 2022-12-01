@@ -64,6 +64,8 @@ async function main(page) {
       addGeneralInfoPlayer(data, playerInfo, player2Info, player3Info);
       addRadarPlot(data, playerInfo, player2Info, player3Info);
 
+      //add Bar Plot with the default option
+      addBarPlot("insideScoring", playerInfo, player2Info, player3Info);
       const barPlotFilter = document.getElementById("barPlotFilter");
       barPlotFilter.addEventListener("change", (e) => {
         const selectedOption =

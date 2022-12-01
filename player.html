@@ -63,15 +63,20 @@
           </section>
           <section class="barPlot">
             <h2 id="barPlotTitle"></h2>
-            <select id="barPlotFilter">
-              <option value="insideScoring">Inside Scoring</option>
-              <option value="outsideScoring">Outside Scoring</option>
-              <option value="freeThrow">Free Throw</option>
-              <option value="playmaking">Playmaking</option>
-              <option value="rebounding">Rebounding</option>
-              <option value="blocking">Blocking</option>
-              <option value="stealing">Stealing</option>
-            </select>
+
+            <div class="barPlotFilter">
+              <p>Filter by</p>
+              <select id="barPlotFilter" class="filterSelect">
+                <option value="insideScoring">Inside Scoring</option>
+                <option value="outsideScoring">Outside Scoring</option>
+                <option value="freeThrow">Free Throw</option>
+                <option value="playmaking">Playmaking</option>
+                <option value="rebounding">Rebounding</option>
+                <option value="blocking">Blocking</option>
+                <option value="stealing">Stealing</option>
+              </select>
+            </div>
+
             <div id="barPlot"></div>
           </section>
           <!-- <section class="courtPlot">

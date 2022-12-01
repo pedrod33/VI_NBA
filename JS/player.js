@@ -231,9 +231,9 @@ function addRadarPlot(
 
   // const container = document.getElementById("radarPlotContainer");
 
-  const w = 400 - 40 - 40;
-  const h = 400 - 40 - 40;
-  const margin = 80;
+  const w = 350;
+  const h = 350;
+  const margin = 120;
   const color = d3.scaleOrdinal().range(["#c92a2a", "#51cf66", "#1864ab"]);
 
   const starCfg = {
@@ -312,17 +312,33 @@ function addBarPlot(
   player3 = undefined
 ) {
   const filters = {
-    insideScoring: [{ "2PF": "2 Points Misses" }, { "2P": "2 Points Goals" }],
-    outsideScoring: [{ "3PF": "3 Points Misses" }, { "3P": "3 Points Goals" }],
-    freeThrow: [{ FTF: "Free Throw Misses" }, { FT: "Free Throw Goals" }],
-    playmaking: [{ AST: "Assists" }],
-    rebounding: [{ ORB: "Offensive Rebounds" }, { DRB: "Defensive Rebounds" }],
-    blocking: [{ BLK: "Blocks" }],
-    stealing: [{ STL: "Steals" }],
+    insideScoring: {
+      attr: [{ "2PF": "2 Points Misses" }, { "2P": "2 Points Goals" }],
+      name: "Inside Scoring",
+    },
+    outsideScoring: {
+      attr: [{ "3PF": "3 Points Misses" }, { "3P": "3 Points Goals" }],
+      name: "Outside Scoring",
+    },
+    freeThrow: {
+      attr: [{ FTF: "Free Throw Misses" }, { FT: "Free Throw Goals" }],
+      name: "Free Throw",
+    },
+    playmaking: { attr: [{ AST: "Assists" }], name: "Playmaking" },
+    rebounding: {
+      attr: [{ ORB: "Offensive Rebounds" }, { DRB: "Defensive Rebounds" }],
+      name: "Rebounding",
+    },
+    blocking: { attr: [{ BLK: "Blocks" }], name: "Blocking" },
+    stealing: { attr: [{ STL: "Steals" }], name: "Stealing" },
   };
 
   const data = [];
-  const selectedFilters = filters[filter];
+  const selectedFilters = filters[filter].attr;
+
+  const barPlotTitle = document.getElementById("barPlotTitle");
+
+  barPlotTitle.textContent = `${filters[filter].name} Bar Plot`;
 
   if (player1) {
     const playerInfo = { Player: player1.Player };
@@ -375,12 +391,24 @@ function addBarPlot(
   const subgroups = data.map((d) => d.Player);
   console.log("subgroups", subgroups);
 
-  const groups = Object.keys(data[0]).splice(1);
+  const g = Object.keys(data[0]).splice(1);
+  const groups = g.map((g, i) => filters[filter].attr[i][g]);
   console.log("groups", groups);
+
+  let maxValue = 0;
+  data.forEach((d) => {
+    const keys = Object.keys(data[0]);
+    keys.forEach((key) => {
+      if (typeof d[key] === "number" && d[key] > maxValue)
+        maxValue = Math.ceil(d[key]);
+    });
+  });
+
+  console.log("maxValue", maxValue);
 
   // set the dimensions and margins of the graph
   // set the dimensions and margins of the graph
-  const margin = { top: 10, right: 30, bottom: 20, left: 50 },
+  const margin = { top: 10, right: 80, bottom: 20, left: 50 },
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
@@ -391,20 +419,21 @@ function addBarPlot(
   const svg = d3
     .select("#barPlot")
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
+    .attr("width", width + margin.left + margin.right * 2)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
   // Add X axis
   const x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
+
   svg
     .append("g")
     .attr("transform", `translate(0, ${height})`)
     .call(d3.axisBottom(x).tickSize(0));
 
   // Add Y axis
-  const y = d3.scaleLinear().domain([0, 40]).range([height, 0]);
+  const y = d3.scaleLinear().domain([0, maxValue]).range([height, 0]);
   svg.append("g").call(d3.axisLeft(y));
 
   // Another scale for subgroup position?
@@ -426,7 +455,7 @@ function addBarPlot(
     // Enter in data = loop group per group
     .data(selectedFilters)
     .join("g")
-    .attr("transform", (d) => `translate(${x(Object.keys(d)[0])}, 0)`)
+    .attr("transform", (d) => `translate(${x(Object.values(d)[0])}, 0)`)
     .selectAll("rect")
     .data(function (d) {
       return subgroups.map(function (key, i) {
@@ -440,4 +469,20 @@ function addBarPlot(
     .attr("width", xSubgroup.bandwidth())
     .attr("height", (d) => height - y(d.value))
     .attr("fill", (d) => color(d.key));
+
+  for (let i = 0; i < subgroups.length; i++) {
+    svg
+      .append("rect")
+      .style("fill", color(i))
+      .attr("x", width - margin.right + 120)
+      .attr("y", height / 2 + 30 * i)
+      .attr("width", 15)
+      .attr("height", 15);
+    svg
+      .append("text")
+      .attr("x", width - margin.right + 120 + 21)
+      .attr("y", height / 2 + 11 + 30 * i)
+      .attr("text-anchor", "start")
+      .text(subgroups[i]);
+  }
 }
