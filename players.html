@@ -46,55 +46,19 @@
             <div class="parallelFilters">
               <div>
                 <p>Position</p>
-                <fieldset>
-                  <input
-                    type="radio"
-                    id="C"
-                    name="parallelPosition"
-                    value="C"
-                  />
-                  <label for="C">Center (C)</label><br />
-                  <input
-                    type="radio"
-                    id="PF"
-                    name="parallelPosition"
-                    value="PF"
-                  />
-                  <label for="PF">Power Forward (PF)</label><br />
-                  <input
-                    type="radio"
-                    id="SF"
-                    name="parallelPosition"
-                    value="SF"
-                  />
-                  <label for="SF">Small Forward (PF)</label>
-                  <input
-                    type="radio"
-                    id="PG"
-                    name="parallelPosition"
-                    value="PG"
-                  />
-                  <label for="PG">Point Guard (PG)</label>
-                  <input
-                    type="radio"
-                    id="SG"
-                    name="parallelPosition"
-                    value="SG"
-                  />
-                  <label for="SG">Shooting Guard (SG)</label>
-                </fieldset>
+                <select id="parallelPosition">
+                  <option value="all">All</option>
+                  <option value="C">Center (C)</option>
+                  <option value="PF">Power Forward (PF)</option>
+                  <option value="SF">Small Forward (SF)</option>
+                  <option value="PG">Point Guard (PG)</option>
+                  <option value="SG">Shooting Guard (SG)</option>
+                </select>
               </div>
 
               <div>
                 <fieldset id="parallelTeam">
                   <legend>Team(s)</legend>
-                  <input
-                    type="checkbox"
-                    id="all"
-                    name="parallelTeam"
-                    value="all"
-                  />
-                  <label for="all">All</label>
                 </fieldset>
               </div>
 

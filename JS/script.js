@@ -23,25 +23,21 @@ async function main(page) {
       //Add form that contains an auto complete input
       autoCompletePlayersName(data, "player_input", "players_list");
 
-      const teamSelectFilter = document.getElementById("parallelTeam");
-      const allTeamsCheckbox = document.getElementById("all");
+      const positionFilter = document.getElementById("parallelPosition");
+      positionFilter.addEventListener("change", () => {
+        const teams = filterTeams();
+        const position = filterPosition();
 
-      allTeamsCheckbox.addEventListener("click", () => {
-        const checkboxs = document.getElementsByClassName("checkbox");
+        console.log("entrei", teams, "------", position);
 
-        if (allTeamsCheckbox.checked) {
-          for (let i = 0; i < checkboxs.length; i++) {
-            const cCheckbox = checkboxs[i];
-            cCheckbox.checked = true;
-          }
-        } else {
-          for (let i = 0; i < checkboxs.length; i++) {
-            const cCheckbox = checkboxs[i];
-            cCheckbox.checked = false;
-          }
-        }
+        addParalelPlayersPlot(data, {
+          position,
+          teams,
+          age: { min: 0, max: Infinity },
+        });
       });
 
+      const teamSelectFilter = document.getElementById("parallelTeam");
       for (let i = 0; i < Object.keys(teams).length; i++) {
         const key = Object.keys(teams)[i];
 
@@ -51,6 +47,7 @@ async function main(page) {
         input.value = key;
         input.name = key;
         input.className = "checkbox";
+        input.checked = true;
 
         const label = document.createElement("label");
         label.setAttribute("for", key);
@@ -60,44 +57,45 @@ async function main(page) {
         teamSelectFilter.appendChild(label);
 
         input.addEventListener("click", () => {
-          const checkboxs = document.getElementsByClassName("checkbox");
+          const teams = filterTeams();
+          const position = filterPosition();
 
-          let allChecked = true;
-          for (let i = 0; i < checkboxs.length; i++) {
-            const cCheckbox = checkboxs[i];
-            if (!cCheckbox.checked) {
-              allChecked = false;
-              break;
-            }
-          }
-
-          if (allChecked) {
-            document.getElementById("all").checked = true;
-          } else {
-            document.getElementById("all").checked = false;
-          }
+          addParalelPlayersPlot(data, {
+            position,
+            teams,
+            age: { min: 0, max: Infinity },
+          });
         });
       }
 
       addParalelPlayersPlot(data, {
-        groupBy: "position",
-        position: "",
-        team: "all",
+        position: "all",
+        teams: Object.keys(teams),
         age: { min: 0, max: Infinity },
       });
-      const teamFilter = document.getElementById("parallelTeam");
 
-      // teamFilter.addEventListener("change", (e) => {
-      //   const selectedOption =
-      //     teamFilter.options[teamFilter.selectedIndex].value;
+      //helper functions
+      const filterTeams = () => {
+        const checkboxs = document.getElementsByClassName("checkbox");
 
-      //   addParalelPlayersPlot(data, {
-      //     groupBy: "position",
-      //     position: "",
-      //     team: selectedOption,
-      //     age: { min: 0, max: Infinity },
-      //   });
-      // });
+        const teams = [];
+        for (let i = 0; i < checkboxs.length; i++) {
+          const cCheckbox = checkboxs[i];
+          if (cCheckbox.checked) {
+            teams.push(cCheckbox.id);
+          }
+        }
+
+        return teams;
+      };
+
+      const filterPosition = () => {
+        const positionFilter = document.getElementById("parallelPosition");
+        const selectedOption =
+          positionFilter.options[positionFilter.selectedIndex].value;
+
+        return selectedOption;
+      };
 
       break;
     case "teams":
@@ -165,12 +163,14 @@ async function main(page) {
 
   //add Event listener to overlay
   const overlay = document.getElementById("overlay");
-  overlay.addEventListener("click", () => {
-    const modals = document.querySelectorAll(".modal.active");
-    modals.forEach((modal) => {
-      closeModal(modal);
+
+  if (overlay)
+    overlay.addEventListener("click", () => {
+      const modals = document.querySelectorAll(".modal.active");
+      modals.forEach((modal) => {
+        closeModal(modal);
+      });
     });
-  });
 
   //add event listeners to buttons to close modals
   const closeModalButtons = document.querySelectorAll("[data-close-button]");

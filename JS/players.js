@@ -70,13 +70,12 @@ function addParalelPlayersPlot(data, filters) {
   //clear everything inside bar plot Div
   document.getElementById("paralelPlayers").replaceChildren();
 
-  console.log("filters", filters);
+  //filter by team
+  data = data.filter((d) => filters.teams.includes(d.Tm));
 
-  if (filters.team !== "all") {
-    data = data.filter((d) => d.Tm === filters.team);
-  }
-
-  console.log("data", data);
+  //filter by position
+  if (filters.position !== "all")
+    data = data.filter((d) => filters.position === d.Pos);
 
   // set the dimensions and margins of the graph
   const margin = { top: 50, right: 50, bottom: 20, left: 20 },
@@ -95,7 +94,11 @@ function addParalelPlayersPlot(data, filters) {
   // Color scale: give me a specie name, I return a color
   const color = d3
     .scaleOrdinal()
-    .domain(["C", "PF", "SF", "PG", "SG"])
+    .domain(
+      filters.position === "all"
+        ? ["C", "PF", "SF", "PG", "SG"]
+        : [filters.position]
+    )
     .range(["red", "green", "#fde725ff", "#21238df3", "#71208dff"]);
 
   // Here I set the list of dimension manually to control the order of axis:
