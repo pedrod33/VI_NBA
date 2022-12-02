@@ -22,14 +22,89 @@ async function main(page) {
     case "players":
       //Add form that contains an auto complete input
       autoCompletePlayersName(data, "player_input", "players_list");
+
+      const teamSelectFilter = document.getElementById("parallelTeam");
+      const allTeamsCheckbox = document.getElementById("all");
+
+      allTeamsCheckbox.addEventListener("click", () => {
+        const checkboxs = document.getElementsByClassName("checkbox");
+
+        if (allTeamsCheckbox.checked) {
+          for (let i = 0; i < checkboxs.length; i++) {
+            const cCheckbox = checkboxs[i];
+            cCheckbox.checked = true;
+          }
+        } else {
+          for (let i = 0; i < checkboxs.length; i++) {
+            const cCheckbox = checkboxs[i];
+            cCheckbox.checked = false;
+          }
+        }
+      });
+
+      for (let i = 0; i < Object.keys(teams).length; i++) {
+        const key = Object.keys(teams)[i];
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.id = key;
+        input.value = key;
+        input.name = key;
+        input.className = "checkbox";
+
+        const label = document.createElement("label");
+        label.setAttribute("for", key);
+        label.textContent = teams[key].name;
+
+        teamSelectFilter.appendChild(input);
+        teamSelectFilter.appendChild(label);
+
+        input.addEventListener("click", () => {
+          const checkboxs = document.getElementsByClassName("checkbox");
+
+          let allChecked = true;
+          for (let i = 0; i < checkboxs.length; i++) {
+            const cCheckbox = checkboxs[i];
+            if (!cCheckbox.checked) {
+              allChecked = false;
+              break;
+            }
+          }
+
+          if (allChecked) {
+            document.getElementById("all").checked = true;
+          } else {
+            document.getElementById("all").checked = false;
+          }
+        });
+      }
+
+      addParalelPlayersPlot(data, {
+        groupBy: "position",
+        position: "",
+        team: "all",
+        age: { min: 0, max: Infinity },
+      });
+      const teamFilter = document.getElementById("parallelTeam");
+
+      // teamFilter.addEventListener("change", (e) => {
+      //   const selectedOption =
+      //     teamFilter.options[teamFilter.selectedIndex].value;
+
+      //   addParalelPlayersPlot(data, {
+      //     groupBy: "position",
+      //     position: "",
+      //     team: selectedOption,
+      //     age: { min: 0, max: Infinity },
+      //   });
+      // });
+
       break;
     case "teams":
       //Add cards with all teams
       addTeams(data);
       break;
     case "player":
-      //TODO: Create Functions to load d3 visualizations
-
       const currentURL = new URLSearchParams(window.location.search);
 
       //Get Player 1

@@ -39,6 +39,81 @@
           />
           <ul class="players_list" id="players_list"></ul>
         </form>
+        <section class="allPlayersComparisons">
+          <section class="paralelPlayersSection">
+            <h2>Relation Parallel Plot</h2>
+
+            <div class="parallelFilters">
+              <div>
+                <p>Position</p>
+                <fieldset>
+                  <input
+                    type="radio"
+                    id="C"
+                    name="parallelPosition"
+                    value="C"
+                  />
+                  <label for="C">Center (C)</label><br />
+                  <input
+                    type="radio"
+                    id="PF"
+                    name="parallelPosition"
+                    value="PF"
+                  />
+                  <label for="PF">Power Forward (PF)</label><br />
+                  <input
+                    type="radio"
+                    id="SF"
+                    name="parallelPosition"
+                    value="SF"
+                  />
+                  <label for="SF">Small Forward (PF)</label>
+                  <input
+                    type="radio"
+                    id="PG"
+                    name="parallelPosition"
+                    value="PG"
+                  />
+                  <label for="PG">Point Guard (PG)</label>
+                  <input
+                    type="radio"
+                    id="SG"
+                    name="parallelPosition"
+                    value="SG"
+                  />
+                  <label for="SG">Shooting Guard (SG)</label>
+                </fieldset>
+              </div>
+
+              <div>
+                <fieldset id="parallelTeam">
+                  <legend>Team(s)</legend>
+                  <input
+                    type="checkbox"
+                    id="all"
+                    name="parallelTeam"
+                    value="all"
+                  />
+                  <label for="all">All</label>
+                </fieldset>
+              </div>
+
+              <div>
+                <p>Age</p>
+                <div>
+                  <p>From</p>
+                  <input type="number" />
+                </div>
+                <div>
+                  <p>To</p>
+                  <input type="number" />
+                </div>
+              </div>
+            </div>
+
+            <div id="paralelPlayers"></div>
+          </section>
+        </section>
       </main>
     </div>
 
@@ -53,6 +128,7 @@
     <!-- MY JS -->
     <script src="./JS/renderMenu.js"></script>
     <script src="./JS/players.js"></script>
+    <script src="./data/teamsData.js"></script>
     <script src="./JS/script.js" lang="javascript"></script>
   </body>
 </html>
