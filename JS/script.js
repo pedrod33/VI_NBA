@@ -114,13 +114,24 @@ async function main(page) {
         addBoxPlotPlayers(
           data,
           filters,
-          { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
+          {
+            "2P": { name: "2 Points Goals" },
+            "3P": { name: "3 Points Goals" },
+            AST: { name: "Assists per game" },
+            FT: { name: "Free Throws Goals" },
+            // ORB: { name: "Offensive Rebounds per game" },
+          },
           "boxPlotAttack"
         );
         addBoxPlotPlayers(
           data,
           filters,
-          { BLK: {}, STL: {}, DRB: {}, PF: {} },
+          {
+            BLK: { name: "Blocks per game" },
+            STL: { name: "Steals per game" },
+            TRB: { name: "Rebounds per game" },
+            PF: { name: "Fouls per game" },
+          },
           "boxPlotDefense"
         );
       };

@@ -73,7 +73,7 @@
   display: grid;
   grid-template-columns: 1fr 6fr;
   grid-template-rows: repeat(2, 1fr);
-  gap: 1.2rem;
+  gap: 4.8rem;
   color: #fff;
 }
 
@@ -119,6 +119,10 @@
   display: grid;
   grid-template-columns: 1fr;
   place-items: center;
+
+  background-color: #d3d3d310;
+  border-radius: 1rem;
+  padding: 1.2rem 2.4rem;
 }
 
 .paralelPlayersSection > h2 {
@@ -130,6 +134,20 @@
   display: grid;
   gap: 2.4rem;
   grid-template-columns: repeat(2, 1fr);
+}
+
+.boxPlotSection > div {
+  background-color: #d3d3d310;
+  border-radius: 1rem;
+  padding: 1.2rem 0;
+}
+
+.boxPlotSection > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2.4rem;
 }
 
 #parallelPosition {
