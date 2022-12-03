@@ -28,6 +28,41 @@
 
 /*Below 1344px (Smaller computers) */
 @media (max-width: 84em) {
+  .allPlayersComparisons {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .paralelPlayersSection > div {
+    width: 65vw;
+    overflow-x: auto;
+  }
+
+  .boxPlotSection {
+    grid-template-columns: 1fr;
+    place-items: center;
+  }
+
+  .parallelFilters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.4rem;
+  }
+
+  .parallelFilters > :last-child {
+    grid-column: 1 / 4;
+    margin-bottom: 4.8rem;
+  }
+
+  .parallelFilters > :last-child > fieldset {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 1.2rem;
+  }
+
+  .parallelFilters > :last-child > fieldset > legend {
+    grid-column: 1 / 6;
+  }
 }
 
 /*Below 1200px (Tablets on horizontal) */
@@ -72,6 +107,14 @@
 @media (max-width: 59em) {
   .teams_list {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .parallelFilters > :last-child > fieldset {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .parallelFilters > :last-child > fieldset > legend {
+    grid-column: 1 / 4;
   }
 }
 
