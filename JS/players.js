@@ -70,8 +70,15 @@ function addParalelPlayersPlot(data, filters) {
   //clear everything inside bar plot Div
   document.getElementById("paralelPlayers").replaceChildren();
 
-  //filter by team
-  data = data.filter((d) => filters.teams.includes(d.Tm));
+  //filter by team & age & games
+  data = data.filter(
+    (d) =>
+      filters.teams.includes(d.Tm) &&
+      d.Age >= filters.age.min &&
+      d.Age <= filters.age.max &&
+      d.G >= filters.games.min &&
+      d.G <= filters.games.max
+  );
 
   //filter by position
   if (filters.position !== "all")
@@ -228,10 +235,15 @@ function addBoxPlotPlayers(data, filters, stats, id) {
   //clear everything inside bar plot Div
   document.getElementById(id).replaceChildren();
 
-  console.log("filters", filters);
-
-  //filter by team
-  data = data.filter((d) => filters.teams.includes(d.Tm));
+  //filter by team & age & games
+  data = data.filter(
+    (d) =>
+      filters.teams.includes(d.Tm) &&
+      d.Age >= filters.age.min &&
+      d.Age <= filters.age.max &&
+      d.G >= filters.games.min &&
+      d.G <= filters.games.max
+  );
 
   //filter by position
   if (filters.position !== "all")

@@ -26,28 +26,7 @@ async function main(page) {
       //add Plots after events
       const positionFilter = document.getElementById("parallelPosition");
       positionFilter.addEventListener("change", () => {
-        const teams = filterTeams();
-        const position = filterPosition();
-
-        addParalelPlayersPlot(data, {
-          position,
-          teams,
-          age: { min: 0, max: Infinity },
-        });
-
-        addBoxPlotPlayers(
-          data,
-          { position, teams },
-          { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
-          "boxPlotAttack"
-        );
-
-        addBoxPlotPlayers(
-          data,
-          { position, teams },
-          { BLK: {}, STL: {}, DRB: {}, PF: {} },
-          "boxPlotDefense"
-        );
+        addPlots("filters");
       });
 
       const teamSelectFilter = document.getElementById("parallelTeam");
@@ -70,28 +49,7 @@ async function main(page) {
         teamSelectFilter.appendChild(label);
 
         input.addEventListener("click", () => {
-          const teams = filterTeams();
-          const position = filterPosition();
-
-          addParalelPlayersPlot(data, {
-            position,
-            teams,
-            age: { min: 0, max: Infinity },
-          });
-
-          addBoxPlotPlayers(
-            data,
-            { position, teams },
-            { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
-            "boxPlotAttack"
-          );
-
-          addBoxPlotPlayers(
-            data,
-            { position, teams },
-            { BLK: {}, STL: {}, DRB: {}, PF: {} },
-            "boxPlotDefense"
-          );
+          addPlots("filters");
         });
       }
 
@@ -99,83 +57,70 @@ async function main(page) {
       const maxAgeInput = document.getElementById("max_age");
 
       minAgeInput.addEventListener("keyup", () => {
-        const { min, max } = filterByAge();
-        const teams = filterTeams();
-        const position = filterPosition();
-
-        //add default
-        addParalelPlayersPlot(data, {
-          position,
-          teams,
-          age: { min, max },
-        });
-
-        addBoxPlotPlayers(
-          data,
-          { position, teams, age: { min, max } },
-          { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
-          "boxPlotAttack"
-        );
-
-        addBoxPlotPlayers(
-          data,
-          { position, teams, age: { min, max } },
-          { BLK: {}, STL: {}, DRB: {}, PF: {} },
-          "boxPlotDefense"
-        );
+        addPlots("filters");
       });
 
       maxAgeInput.addEventListener("keyup", () => {
-        const { min, max } = filterByAge();
-        const teams = filterTeams();
-        const position = filterPosition();
-
-        //add default
-        addParalelPlayersPlot(data, {
-          position,
-          teams,
-          age: { min, max },
-        });
-
-        addBoxPlotPlayers(
-          data,
-          { position, teams, age: { min, max } },
-          { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
-          "boxPlotAttack"
-        );
-
-        addBoxPlotPlayers(
-          data,
-          { position, teams, age: { min, max } },
-          { BLK: {}, STL: {}, DRB: {}, PF: {} },
-          "boxPlotDefense"
-        );
+        addPlots("filters");
       });
 
       const minGamesInput = document.getElementById("min_games");
       const maxGamesInput = document.getElementById("max_games");
 
-      //add default
-      addParalelPlayersPlot(data, {
-        position: "all",
-        teams: Object.keys(teams),
+      minGamesInput.addEventListener("keyup", () => {
+        addPlots("filters");
       });
 
-      addBoxPlotPlayers(
-        data,
-        { position: "all", teams: Object.keys(teams) },
-        { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
-        "boxPlotAttack"
-      );
-
-      addBoxPlotPlayers(
-        data,
-        { position: "all", teams: Object.keys(teams) },
-        { BLK: {}, STL: {}, DRB: {}, PF: {} },
-        "boxPlotDefense"
-      );
+      maxGamesInput.addEventListener("keyup", () => {
+        addPlots("filters");
+      });
 
       //helper functions
+      const addPlots = (filters = "default") => {
+        //If no filters passed, add the default ones
+        if (filters === "default") {
+          filters = {
+            position: "all",
+            teams: Object.keys(teams),
+            age: {
+              min: 0,
+              max: 150,
+            },
+            games: {
+              min: 0,
+              max: 150,
+            },
+          };
+        } else {
+          const age = filterByAge();
+          const games = filterByGames();
+          const teams = filterTeams();
+          const position = filterPosition();
+
+          filters = {
+            position,
+            teams,
+            age,
+            games,
+          };
+        }
+
+        //add default
+        addParalelPlayersPlot(data, filters);
+        addBoxPlotPlayers(
+          data,
+          filters,
+          { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
+          "boxPlotAttack"
+        );
+        addBoxPlotPlayers(
+          data,
+          filters,
+          { BLK: {}, STL: {}, DRB: {}, PF: {} },
+          "boxPlotDefense"
+        );
+      };
+
       const filterTeams = () => {
         const checkboxs = document.getElementsByClassName("checkbox");
 
@@ -202,8 +147,8 @@ async function main(page) {
         let min = minAgeInput.value;
         let max = maxAgeInput.value;
 
-        if (!min) min = -1;
-        if (!max) max = 99999999;
+        if (!min) min = 0;
+        if (!max) max = 150;
 
         return { min: +min, max: +max };
       };
@@ -212,13 +157,18 @@ async function main(page) {
         let min = minGamesInput.value;
         let max = maxGamesInput.value;
 
-        if (!min) min = -1;
-        if (!max) max = 99999999;
+        if (!min) min = 0;
+        if (!max) max = 150;
 
         return { min: +min, max: +max };
       };
 
+      //Default add all Plots when entering page with default filters
+      addPlots();
+
       break;
+
+    //TODO: Create function for the add plots. Clear this code to be more concise
     case "teams":
       //Add cards with all teams
       addTeams(data);
