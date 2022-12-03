@@ -44,6 +44,7 @@ function showTeamHeader(teamId, players){
 }
 
 function showTeamStats(players){
+    console.log(players)
     const team_main = document.getElementById("team_main");
 
     let def_stats = {"BLK":{},"STL":{},"DRB":{}, "PF":{}};

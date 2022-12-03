@@ -126,7 +126,6 @@ function drawRadarPlot(
       const barPlotFilter = document.getElementById("barPlotFilter");
 
       barPlotFilter.value = key;
-      console.log("players", players);
       addBarPlot(key, players[0], players[1], players[2]);
     })
     .attr("x", function (d, i) {
@@ -447,64 +446,6 @@ d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/ir
 }
 
 
-//---------------------------------line-graph-------------------------------
-
-
-function drawLineGraph(data,id){
-  // set the dimensions and margins of the graph
-  const margin = {top: 10, right: 30, bottom: 30, left: 60},
-  width = 460 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
-
-  // append the svg object to the body of the page
-  const svg = d3.select(id)
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", `translate(${margin.left},${margin.top})`);
-  console.log(data)
-  //Read the data
-  d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv").then( function(data) {
-  console.log
-  // group the data: I want to draw one line per group
-  const sumstat = d3.group(data, d => d.name); // nest function allows to group the calculation per level of a factor
-
-  // Add X axis --> it is a date format
-  const x = d3.scaleLinear()
-  .domain(d3.extent(data, function(d) { return d.year; }))
-  .range([ 0, width ]);
-  svg.append("g")
-  .attr("transform", `translate(0, ${height})`)
-  .call(d3.axisBottom(x).ticks(5));
-
-  // Add Y axis
-  const y = d3.scaleLinear()
-  .domain([0, d3.max(data, function(d) { return +d.n; })])
-  .range([ height, 0 ]);
-  svg.append("g")
-  .call(d3.axisLeft(y));
-
-  // color palette
-  const color = d3.scaleOrdinal()
-  .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
-
-  // Draw the line
-  svg.selectAll(".line")
-    .data(sumstat)
-    .join("path")
-      .attr("fill", "none")
-      .attr("stroke", function(d){ return color(d[0]) })
-      .attr("stroke-width", 1.5)
-      .attr("d", function(d){
-        return d3.line()
-          .x(function(d) { return x(d.year); })
-          .y(function(d) { return y(+d.n); })
-          (d[1])
-      })
-
-  })
-}
 
 function drawRadarPlot(id, cfg, axisVariables, data, tooltip) {
   //Radius of the outermost circle
@@ -586,7 +527,6 @@ function drawRadarPlot(id, cfg, axisVariables, data, tooltip) {
 
   // ------- Draw the axes ---------
 
-  console.log("axisVariables", axisVariables);
 
   //Create the straight lines radiating outward from the center
   const axis = axisGrid
@@ -788,7 +728,6 @@ function drawRadarPlot(id, cfg, axisVariables, data, tooltip) {
       tooltip.style("opacity", 0).style("left", 0).style("top", 0);
     });
 
-  console.log("data", data);
 
   if (data.length > 1) {
     svg
@@ -1062,7 +1001,8 @@ function drawLineGraph(data,x_axis,id, tooltip, title){
     
     svg.append("path")
     .attr("fill", "none")
-    .attr("stroke", "white")
+    .attr("stroke", "green")
+    .attr("opacity","0.5")
     .attr("stroke-width", 1.5)
     .attr("id","player"+player["Player"])
     .attr("d", function(d){
@@ -1073,9 +1013,11 @@ function drawLineGraph(data,x_axis,id, tooltip, title){
     .on("mouseover", function (mouse, i) {
       d3.select(this)
       .attr("stroke","red")
+      .attr("opacity","1")
       .attr("stroke-width", 3)
-      tooltip.style("opacity", 1);
+
       tooltip
+        .style("opacity", 1)
         .html("Player: " + player["Player"])
         .style("left", window.screen.width/2+d3.pointer(mouse)[0]+76 + "px")
         .style("top", d3.pointer(mouse)[1]+20 + "px")
@@ -1083,7 +1025,8 @@ function drawLineGraph(data,x_axis,id, tooltip, title){
     })
     .on("mouseout", function () {
       d3.select(this)
-      .attr("stroke","white")
+      .attr("stroke","green")
+      .attr("opacity","0.5")
       .attr("stroke-width", 1.5)
 
       tooltip.style("opacity", 0).style("left", 0).style("top", 0);
@@ -1100,7 +1043,130 @@ function drawLineGraph(data,x_axis,id, tooltip, title){
   svg.append("g")
   .call(d3.axisLeft(y).ticks(3).tickValues([mins[k], maxes[k]]))
   .attr("transform", "translate("+d*k+",0)")
-  .style("color","green");  
+  .style("color","white");  
+}
+}
+
+function drawLineGraphTeams(data,x_axis,id, tooltip, title, from_field, to_field){
+  // set the dimensions and margins of the graph
+  const margin = {top: 25, right: 30, bottom: 30, left: 60},
+  width = 700 - margin.left - margin.right,
+  height = 300 - margin.top - margin.bottom;
+  console.log(x_axis)
+  // append the svg object to the body of the page
+  const svg = d3.select(id)
+  .append("svg")
+  .attr("class","team_wrap")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", `translate(${margin.left},${margin.top})`);
+  
+  svg.append("text")
+  .text(title)
+  .attr("x",width/2)
+  .attr("y",-10)
+  .attr("text-anchor","middle")
+  .style("font-size","20px")
+  .style("fill","white");
+
+  //Read the data
+  // group the data: I want to draw one line per group
+  // Add X axis --> it is a date format
+
+  let x = d3.scalePoint()
+      .range([0, width])
+      .domain(x_axis);
+  svg.append("g")
+  .attr("transform", `translate(0, ${height})`)
+  .call(d3.axisBottom(x).ticks(5))
+  .attr("class","g-axes");
+  
+  const dkeys = Object.keys(data);
+  let maxes = [];
+  let mins = [];
+  for(let i=0;i<x_axis.length;i++){
+    maxes.push(Math.max(...data[x_axis[i]]));
+    mins.push(Math.min(...data[x_axis[i]]));
+  }
+  //tm = Math.ceil(tm+1);
+  // Add Y axis
+  
+  // color palette
+  // const color = d3.scaleOrdinal()
+  // .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+
+  // Draw the line
+  let d = width/(x_axis.length-1);
+
+  for (let k=0;k<data[x_axis[0]].length;k++){
+    // svg.append("line")
+    //   .style("stroke", '#e41a1c')  // colour the line
+    //   .style("opacity","0.7")
+    //   .attr("x1", d*k)     // x position of the first end of the line
+    //   .attr("y1", height)      // y position of the first end of the line
+    //   .attr("x2", d*k)     // x position of the second end of the line
+    //   .attr("y2", 0);
+    
+    let points = [];
+    let player = {};
+    for (let i=0;i<x_axis.length;i++){
+      // console.log(data[x_axis[i]][k]>=mins[i])
+      // console.log(data[x_axis[i]][k]<=maxes[i])
+      points.push({'y': height-(data[x_axis[i]][k]-mins[i])*height/(maxes[i]-mins[i]),'x': d*i})
+
+    }
+    const dkeys = Object.keys(data);
+    for (let i=0;i<dkeys.length;i++){
+      player[dkeys[i]] = data[dkeys[i]][k];
+    }
+    
+    svg.append("path")
+    .attr("class","line-path")
+    .attr("fill", "none")
+    .attr("stroke", "green")
+    .attr("opacity","0.5")
+    .attr("stroke-width", 1.5)
+    .attr("id","player"+player["Player"])
+    .attr("d", function(d){
+      return d3.line()
+      .x(p => p.x+1)
+      .y(p => p.y)(points)
+    })
+    .on("mouseover", function (mouse, i) {
+      d3.select(this)
+      .attr("stroke","red")
+      .attr("opacity","1")
+      .attr("stroke-width", 3)
+      tooltip.style("opacity", 1);
+      tooltip
+        .html("Team: " + getTeam(player["Tm"]).name + "<br>Number of players: "+ player["NPlayers"])
+        .style("left", 2*window.screen.width/5+d3.pointer(mouse)[0]+76 + "px")
+        .style("top", d3.pointer(mouse)[1]+200 + "px")
+        .style("color", "black");
+    })
+    .on("mouseout", function () {
+      d3.select(this)
+      .attr("stroke","green")
+      .attr("opacity","0.5")
+      .attr("stroke-width", 1.5)
+
+      tooltip.style("opacity", 0).style("left", 0).style("top", 0);
+    })
+    .on("click", function(event) {
+      location.href = "player.html?id="+player["Player"]
+      event.stopPropagation();
+    });
+  }
+  for (let k=0;k<mins.length;k++){
+  const y = d3.scaleLinear()
+    .domain([mins[k],maxes[k]])
+    .range([height, 0]);
+  svg.append("g")
+  .call(d3.axisLeft(y).ticks(3).tickValues([mins[k], maxes[k]]))
+  .attr("transform", "translate("+d*k+",0)")
+  .attr("class","g-axes")
+  .style("color","white");  
 }
 }
 
@@ -1174,6 +1240,83 @@ svg.append("g")
 .call(d3.axisLeft(y));
 
 drawBox(skeys, stats, total_max, width, height, svg)
+}
+
+
+function drawBoxPlotTeams(stats, data, id, title){
+  const margin = {top: 20, right: 30, bottom: 30, left: 60},
+  width = 460 - margin.left - margin.right,
+  height = 300 - margin.top - margin.bottom;
+  console.log(data)
+  const svg = d3.select(id)
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .attr("fill","white")
+  .append("g")
+  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  svg.append("text")
+  .text(title)
+  .attr("x",width/2)
+  .attr("y",0)
+  .attr("text-anchor","middle")
+  .style("font-size","20px")
+  .style("fill","white");
+  let max_val, min_val, med_val, q1_val, q3_val,total_max = -1;
+  let proc_data = {}
+  for(let i = 0;i<Object.keys(stats).length;i++){
+    if (typeof data[stats[i]] == 'undefined'){return}
+    let d_stats = structuredClone(data[stats[i]]);
+    console.log(data[stats[i]])
+    d_stats.sort(function(a, b){return a-b});
+    min_val = Math.max(...d_stats);
+    min_val = Math.min(...d_stats);
+    min_val = d_stats[0]
+    max_val = d_stats[d_stats.length-1]
+    if(max_val>total_max){
+      total_max = max_val
+    }
+    if(d_stats.length%2)
+      med_val = d_stats[Math.floor(d_stats.length/2)]
+    else{
+      med_val = (d_stats[d_stats.length/2]+d_stats[d_stats.length/2-1])/2
+    }
+
+    if(d_stats.length%4){
+      q1_val = d_stats[Math.floor(d_stats.length/4)]
+      q3_val = d_stats[Math.floor(d_stats.length*3/4)]
+
+    }
+    else{
+      q1_val = (d_stats[d_stats.length/4]+d_stats[d_stats.length/4-1])/2
+      q3_val = (d_stats[d_stats.length*3/4]+d_stats[d_stats.length*3/4-1])/2
+
+    }
+    proc_data[stats[i]] = {}
+    proc_data[stats[i]]["min"] = min_val;
+    proc_data[stats[i]]["q1"] = q1_val;
+    proc_data[stats[i]]["med"] = med_val;
+    proc_data[stats[i]]["q3"] = q3_val;
+    proc_data[stats[i]]["max"] = max_val;
+  }
+  let x = d3.scaleBand()
+  .range([0, width])
+  .domain(stats);
+  svg.append("g")
+  .attr("transform", `translate(0, ${height})`)
+  .call(d3.axisBottom(x).ticks(5));
+
+// Add Y axis
+total_max = Math.ceil(total_max)
+const y = d3.scaleLinear()
+.domain([0,total_max])
+.range([height, 0]);
+
+svg.append("g")
+.call(d3.axisLeft(y));
+
+drawBox(stats, proc_data, total_max, width, height, svg)
 }
 
 

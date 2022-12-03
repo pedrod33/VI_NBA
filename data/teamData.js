@@ -51,7 +51,6 @@ function teamData(data){
     let teams = Object.keys(teamStats);
     let totalStats = {};
     let ppStats = {};
-    console.log(Object.keys(teamStats[teams[0]]))
     attrs = Object.keys(teamStats[teams[0]]);
         for(let j = 0; j<attrs.length;j++){
             totalStats[attrs[j]] = []
@@ -75,8 +74,8 @@ function teamData(data){
 
         }
         totalStats["Tm"].push(teams[i])
+        ppStats["Tm"].push(teams[i])
+
     }
-    console.log(totalStats)
-    console.log(ppStats)
     return [totalStats, ppStats];
 }
