@@ -24,8 +24,9 @@ function showTeamHeader(teamId, players){
     line_graph_div.style.display = "inline-block";
     line_graph_div.id = "team_line_graph_id"
     
+    team_main.appendChild(line_graph_div);
     const player_tooltip = d3
-    .select("#"+line_graph_div.id)
+    .select("#team_line_graph_id")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
@@ -38,8 +39,7 @@ function showTeamHeader(teamId, players){
 
     let team_data = individualTeamData(players);
     let statKeys = ["Age","G","MP","2P", "3P", "AST","BLK","FG","FT","STL","TOV","TRB"]
-    drawLineGraph(team_data, statKeys, line_graph_div, player_tooltip);
-    team_main.appendChild(line_graph_div);
+    drawLineGraph(team_data, statKeys, line_graph_div, player_tooltip, "Individual Stats");
 
 }
 

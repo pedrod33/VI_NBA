@@ -1000,9 +1000,9 @@ d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/ir
 //---------------------------line-graph---------------------------
 
 
-function drawLineGraph(data,x_axis,id, tooltip){
+function drawLineGraph(data,x_axis,id, tooltip, title){
   // set the dimensions and margins of the graph
-  const margin = {top: 10, right: 30, bottom: 30, left: 60},
+  const margin = {top: 25, right: 30, bottom: 30, left: 60},
   width = 460 - margin.left - margin.right,
   height = 300 - margin.top - margin.bottom;
 
@@ -1014,6 +1014,14 @@ function drawLineGraph(data,x_axis,id, tooltip){
   .append("g")
   .attr("transform", `translate(${margin.left},${margin.top})`);
   
+  svg.append("text")
+  .text(title)
+  .attr("x",width/2)
+  .attr("y",-10)
+  .attr("text-anchor","middle")
+  .style("font-size","20px")
+  .style("fill","white");
+
   //Read the data
   // group the data: I want to draw one line per group
   // Add X axis --> it is a date format
@@ -1026,21 +1034,15 @@ function drawLineGraph(data,x_axis,id, tooltip){
   .call(d3.axisBottom(x).ticks(5));
   
   const dkeys = Object.keys(data);
-  let tm = -1;
-
+  let maxes = [];
+  let mins = [];
   for(let i=0;i<x_axis.length;i++){
-    let m = Math.max(...data[x_axis[i]]);
-    if(m > tm && m != NaN){
-      tm=m
-    }
+    maxes.push(Math.max(...data[x_axis[i]]));
+    mins.push(Math.min(...data[x_axis[i]]));
   }
-  tm = Math.ceil(tm+1);
+  //tm = Math.ceil(tm+1);
   // Add Y axis
-  const y = d3.scaleLinear()
-  .domain([0,tm])
-  .range([height, 0]);
-  svg.append("g")
-  .call(d3.axisLeft(y));
+  
   // color palette
   // const color = d3.scaleOrdinal()
   // .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
@@ -1048,24 +1050,27 @@ function drawLineGraph(data,x_axis,id, tooltip){
   // Draw the line
   let d = width/(x_axis.length-1);
   for (let k=0;k<data[x_axis[0]].length;k++){
-    svg.append("line")
-      .style("stroke", '#e41a1c')  // colour the line
-      .style("opacity","0.7")
-      .attr("x1", d*k)     // x position of the first end of the line
-      .attr("y1", height)      // y position of the first end of the line
-      .attr("x2", d*k)     // x position of the second end of the line
-      .attr("y2", 0);
+    // svg.append("line")
+    //   .style("stroke", '#e41a1c')  // colour the line
+    //   .style("opacity","0.7")
+    //   .attr("x1", d*k)     // x position of the first end of the line
+    //   .attr("y1", height)      // y position of the first end of the line
+    //   .attr("x2", d*k)     // x position of the second end of the line
+    //   .attr("y2", 0);
     
     let points = [];
     let player = {};
     for (let i=0;i<x_axis.length;i++){
-      points.push({'y': height-data[x_axis[i]][k]*height/tm,'x': d*i})
+      // console.log(data[x_axis[i]][k]>=mins[i])
+      // console.log(data[x_axis[i]][k]<=maxes[i])
+      points.push({'y': height-(data[x_axis[i]][k]-mins[i])*height/(maxes[i]-mins[i]),'x': d*i})
 
     }
     const dkeys = Object.keys(data);
     for (let i=0;i<dkeys.length;i++){
       player[dkeys[i]] = data[dkeys[i]][k];
     }
+    
     svg.append("path")
     .attr("fill", "none")
     .attr("stroke", "white")
@@ -1080,12 +1085,11 @@ function drawLineGraph(data,x_axis,id, tooltip){
       d3.select(this)
       .attr("stroke","red")
       .attr("stroke-width", 3)
-      console.log(player.Player)
       tooltip.style("opacity", 1);
       tooltip
         .html("Player: " + player["Player"])
-        .style("left", d3.pointer(mouse)[0] + "px")
-        .style("top", d3.pointer(mouse)[1] + "px")
+        .style("left", window.screen.width/2+d3.pointer(mouse)[0]+76 + "px")
+        .style("top", d3.pointer(mouse)[1]+20 + "px")
         .style("color", "black");
     })
     .on("mouseout", function () {
@@ -1100,6 +1104,15 @@ function drawLineGraph(data,x_axis,id, tooltip){
       event.stopPropagation();
     });
   }
+  for (let k=0;k<mins.length;k++){
+  const y = d3.scaleLinear()
+    .domain([mins[k],maxes[k]])
+    .range([height, 0]);
+  svg.append("g")
+  .call(d3.axisLeft(y).ticks(3).tickValues([mins[k], maxes[k]]))
+  .attr("transform", "translate("+d*k+",0)")
+  .style("color","green");  
+}
 }
 
 //---------------------------drawBoxPlot---------------------------
