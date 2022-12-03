@@ -45,8 +45,12 @@ async function main(page) {
         label.setAttribute("for", key);
         label.textContent = teams[key].name;
 
-        teamSelectFilter.appendChild(input);
-        teamSelectFilter.appendChild(label);
+        const div = document.createElement("div");
+
+        div.appendChild(input);
+        div.appendChild(label);
+
+        teamSelectFilter.appendChild(div);
 
         input.addEventListener("click", () => {
           addPlots("filters");

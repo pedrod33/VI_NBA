@@ -40,30 +40,22 @@
           <ul class="players_list" id="players_list"></ul>
         </form>
         <section class="allPlayersComparisons">
-          <section class="paralelPlayersSection">
-            <h2>Relation Parallel Plot</h2>
+          <div class="parallelFilters">
+            <div>
+              <p>Position</p>
+              <select id="parallelPosition">
+                <option value="all">All</option>
+                <option value="C">Center (C)</option>
+                <option value="PF">Power Forward (PF)</option>
+                <option value="SF">Small Forward (SF)</option>
+                <option value="PG">Point Guard (PG)</option>
+                <option value="SG">Shooting Guard (SG)</option>
+              </select>
+            </div>
 
-            <div class="parallelFilters">
+            <div class="numberInput">
+              <p>Age</p>
               <div>
-                <p>Position</p>
-                <select id="parallelPosition">
-                  <option value="all">All</option>
-                  <option value="C">Center (C)</option>
-                  <option value="PF">Power Forward (PF)</option>
-                  <option value="SF">Small Forward (SF)</option>
-                  <option value="PG">Point Guard (PG)</option>
-                  <option value="SG">Shooting Guard (SG)</option>
-                </select>
-              </div>
-
-              <div>
-                <fieldset id="parallelTeam">
-                  <legend>Team(s)</legend>
-                </fieldset>
-              </div>
-
-              <div>
-                <p>Age</p>
                 <div>
                   <p>From</p>
                   <input type="number" id="min_age" min="0" />
@@ -73,9 +65,11 @@
                   <input type="number" id="max_age" max="150" />
                 </div>
               </div>
+            </div>
 
+            <div class="numberInput">
+              <p>Games Played</p>
               <div>
-                <p>Games Played</p>
                 <div>
                   <p>From</p>
                   <input type="number" id="min_games" min="0" />
@@ -87,6 +81,15 @@
               </div>
             </div>
 
+            <div>
+              <fieldset id="parallelTeam">
+                <legend>Team(s)</legend>
+              </fieldset>
+            </div>
+          </div>
+
+          <section class="paralelPlayersSection">
+            <h2>Relation Parallel Plot</h2>
             <div id="paralelPlayers"></div>
           </section>
           <section class="boxPlotSection">
