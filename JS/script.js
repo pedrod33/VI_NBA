@@ -22,14 +22,173 @@ async function main(page) {
     case "players":
       //Add form that contains an auto complete input
       autoCompletePlayersName(data, "player_input", "players_list");
+
+      //add Plots after events
+      const positionFilter = document.getElementById("parallelPosition");
+      positionFilter.addEventListener("change", () => {
+        addPlots("filters");
+      });
+
+      const teamSelectFilter = document.getElementById("parallelTeam");
+      for (let i = 0; i < Object.keys(teams).length; i++) {
+        const key = Object.keys(teams)[i];
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.id = key;
+        input.value = key;
+        input.name = key;
+        input.className = "checkbox";
+        input.checked = true;
+
+        const label = document.createElement("label");
+        label.setAttribute("for", key);
+        label.textContent = teams[key].name;
+
+        const div = document.createElement("div");
+
+        div.appendChild(input);
+        div.appendChild(label);
+
+        teamSelectFilter.appendChild(div);
+
+        input.addEventListener("click", () => {
+          addPlots("filters");
+        });
+      }
+
+      const minAgeInput = document.getElementById("min_age");
+      const maxAgeInput = document.getElementById("max_age");
+
+      minAgeInput.addEventListener("keyup", () => {
+        addPlots("filters");
+      });
+
+      maxAgeInput.addEventListener("keyup", () => {
+        addPlots("filters");
+      });
+
+      const minGamesInput = document.getElementById("min_games");
+      const maxGamesInput = document.getElementById("max_games");
+
+      minGamesInput.addEventListener("keyup", () => {
+        addPlots("filters");
+      });
+
+      maxGamesInput.addEventListener("keyup", () => {
+        addPlots("filters");
+      });
+
+      //helper functions
+      const addPlots = (filters = "default") => {
+        //If no filters passed, add the default ones
+        if (filters === "default") {
+          filters = {
+            position: "all",
+            teams: Object.keys(teams),
+            age: {
+              min: 0,
+              max: 150,
+            },
+            games: {
+              min: 0,
+              max: 150,
+            },
+          };
+        } else {
+          const age = filterByAge();
+          const games = filterByGames();
+          const teams = filterTeams();
+          const position = filterPosition();
+
+          filters = {
+            position,
+            teams,
+            age,
+            games,
+          };
+        }
+
+        //add default
+        addParalelPlayersPlot(data, filters);
+        addBoxPlotPlayers(
+          data,
+          filters,
+          {
+            "2P": { name: "2 Points Goals" },
+            "3P": { name: "3 Points Goals" },
+            AST: { name: "Assists per game" },
+            FT: { name: "Free Throws Goals" },
+            // ORB: { name: "Offensive Rebounds per game" },
+          },
+          "boxPlotAttack"
+        );
+        addBoxPlotPlayers(
+          data,
+          filters,
+          {
+            BLK: { name: "Blocks per game" },
+            STL: { name: "Steals per game" },
+            TRB: { name: "Rebounds per game" },
+            PF: { name: "Fouls per game" },
+          },
+          "boxPlotDefense"
+        );
+      };
+
+      const filterTeams = () => {
+        const checkboxs = document.getElementsByClassName("checkbox");
+
+        const teams = [];
+        for (let i = 0; i < checkboxs.length; i++) {
+          const cCheckbox = checkboxs[i];
+          if (cCheckbox.checked) {
+            teams.push(cCheckbox.id);
+          }
+        }
+
+        return teams;
+      };
+
+      const filterPosition = () => {
+        const positionFilter = document.getElementById("parallelPosition");
+        const selectedOption =
+          positionFilter.options[positionFilter.selectedIndex].value;
+
+        return selectedOption;
+      };
+
+      const filterByAge = () => {
+        let min = minAgeInput.value;
+        let max = maxAgeInput.value;
+
+        if (!min) min = 0;
+        if (!max) max = 150;
+
+        return { min: +min, max: +max };
+      };
+
+      const filterByGames = () => {
+        let min = minGamesInput.value;
+        let max = maxGamesInput.value;
+
+        if (!min) min = 0;
+        if (!max) max = 150;
+
+        return { min: +min, max: +max };
+      };
+
+      //Default add all Plots when entering page with default filters
+      addPlots();
+
       break;
+
+    //TODO: Create function for the add plots. Clear this code to be more concise
     case "teams":
       //Add cards with all teams
       addTeams(data);
       break;
     case "player":
-      //TODO: Create Functions to load d3 visualizations
-
       const currentURL = new URLSearchParams(window.location.search);
 
       //Get Player 1
@@ -95,12 +254,14 @@ async function main(page) {
 
   //add Event listener to overlay
   const overlay = document.getElementById("overlay");
-  overlay.addEventListener("click", () => {
-    const modals = document.querySelectorAll(".modal.active");
-    modals.forEach((modal) => {
-      closeModal(modal);
+
+  if (overlay)
+    overlay.addEventListener("click", () => {
+      const modals = document.querySelectorAll(".modal.active");
+      modals.forEach((modal) => {
+        closeModal(modal);
+      });
     });
-  });
 
   //add event listeners to buttons to close modals
   const closeModalButtons = document.querySelectorAll("[data-close-button]");

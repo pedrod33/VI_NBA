@@ -39,6 +39,71 @@
           />
           <ul class="players_list" id="players_list"></ul>
         </form>
+        <section class="allPlayersComparisons">
+          <div class="parallelFilters">
+            <div>
+              <p>Position</p>
+              <select id="parallelPosition">
+                <option value="all">All</option>
+                <option value="C">Center (C)</option>
+                <option value="PF">Power Forward (PF)</option>
+                <option value="SF">Small Forward (SF)</option>
+                <option value="PG">Point Guard (PG)</option>
+                <option value="SG">Shooting Guard (SG)</option>
+              </select>
+            </div>
+
+            <div class="numberInput">
+              <p>Age</p>
+              <div>
+                <div>
+                  <p>From</p>
+                  <input type="number" id="min_age" min="0" />
+                </div>
+                <div>
+                  <p>To</p>
+                  <input type="number" id="max_age" max="150" />
+                </div>
+              </div>
+            </div>
+
+            <div class="numberInput">
+              <p>Games Played</p>
+              <div>
+                <div>
+                  <p>From</p>
+                  <input type="number" id="min_games" min="0" />
+                </div>
+                <div>
+                  <p>To</p>
+                  <input type="number" id="max_games" max="150" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <fieldset id="parallelTeam">
+                <legend>Team(s)</legend>
+              </fieldset>
+            </div>
+          </div>
+
+          <section class="paralelPlayersSection" style="position: relative">
+            <h2>All Players Comparison</h2>
+            <div id="paralelPlayers"></div>
+          </section>
+          <section class="boxPlotSection">
+            <div>
+              <h2>Distribution of Attacking Stats</h2>
+              <div id="boxPlotAttack"></div>
+            </div>
+
+            <div>
+              <h2>Distribution of Defensive Stats</h2>
+              <div id="boxPlotDefense"></div>
+            </div>
+          </section>
+        </section>
       </main>
     </div>
 
@@ -53,6 +118,7 @@
     <!-- MY JS -->
     <script src="./JS/renderMenu.js"></script>
     <script src="./JS/players.js"></script>
+    <script src="./data/teamsData.js"></script>
     <script src="./JS/script.js" lang="javascript"></script>
   </body>
 </html>
