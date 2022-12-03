@@ -602,7 +602,7 @@ function drawLineGraphTeams(
         tooltip.style("opacity", 0).style("left", 0).style("top", 0);
       })
       .on("click", function (event) {
-        location.href = "player.html?id=" + player["Player"];
+        location.href = "team.html?id=" + player["Tm"];
         event.stopPropagation();
       });
   }
@@ -618,7 +618,7 @@ function drawLineGraphTeams(
 }
 
 //---------------------------drawBoxPlot---------------------------
-function drawBoxPlot(stats, data, id, title) {
+function drawBoxPlot(stats, data, id, title, tooltip,side) {
   const margin = { top: 20, right: 30, bottom: 30, left: 60 },
     width = 460 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
@@ -690,10 +690,10 @@ function drawBoxPlot(stats, data, id, title) {
 
   svg.append("g").call(d3.axisLeft(y));
 
-  drawBox(skeys, stats, total_max, width, height, svg);
+  drawBox(skeys, stats, total_max, width, height, svg, tooltip,side);
 }
 
-function drawBoxPlotTeams(stats, data, id, title) {
+function drawBoxPlotTeams(stats, data, id, title,tooltip,side) {
   const margin = { top: 20, right: 30, bottom: 30, left: 60 },
     width = 460 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
@@ -774,11 +774,11 @@ function drawBoxPlotTeams(stats, data, id, title) {
 
   svg.append("g").call(d3.axisLeft(y));
 
-  drawBox(stats, proc_data, total_max, width, height, svg);
+  drawBox(stats, proc_data, total_max, width, height, svg, tooltip,side);
 }
 
 //auxiliar to drawBoxPlot
-function drawBox(skeys, stats, total_max, width, height, svg) {
+function drawBox(skeys, stats, total_max, width, height, svg, tooltip,side) {
   let division = width / skeys.length;
   for (let i = 0; i < skeys.length; i++) {
     svg
@@ -791,7 +791,29 @@ function drawBox(skeys, stats, total_max, width, height, svg) {
         (height * (stats[skeys[i]]["q3"] - stats[skeys[i]]["q1"])) / total_max
       )
       .attr("stroke", "black")
-      .attr("fill", "#69a3b2");
+      .attr("fill", "#69a3b2")
+      .on("mouseover",function(mouse){
+        if(side){
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/2+d3.pointer(mouse)[0]+276 + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          else{
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/3+d3.pointer(mouse)[0] + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          
+          })
+        .on("mouseout", function () {
+          tooltip.style("opacity", 0).style("left", 0).style("top", 0);
+        });
 
     svg
       .append("line")
@@ -799,7 +821,29 @@ function drawBox(skeys, stats, total_max, width, height, svg) {
       .attr("x1", division / 2 - division / 10 + i * division) // x position of the first end of the line
       .attr("y1", height - (stats[skeys[i]]["min"] * height) / total_max) // y position of the first end of the line
       .attr("x2", division / 2 + division / 10 + i * division) // x position of the second end of the line
-      .attr("y2", height - (stats[skeys[i]]["min"] * height) / total_max);
+      .attr("y2", height - (stats[skeys[i]]["min"] * height) / total_max)
+      .on("mouseover",function(mouse){
+        if(side){
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/2+d3.pointer(mouse)[0]+276 + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          else{
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/3+d3.pointer(mouse)[0] + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          
+          })
+        .on("mouseout", function () {
+          tooltip.style("opacity", 0).style("left", 0).style("top", 0);
+        });
 
     svg
       .append("line")
@@ -807,7 +851,29 @@ function drawBox(skeys, stats, total_max, width, height, svg) {
       .attr("x1", division / 2 - division / 10 + i * division) // x position of the first end of the line
       .attr("y1", height - (stats[skeys[i]]["max"] * height) / total_max) // y position of the first end of the line
       .attr("x2", division / 2 + division / 10 + i * division) // x position of the second end of the line
-      .attr("y2", height - (stats[skeys[i]]["max"] * height) / total_max);
+      .attr("y2", height - (stats[skeys[i]]["max"] * height) / total_max)
+      .on("mouseover",function(mouse){
+        if(side){
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/2+d3.pointer(mouse)[0]+276 + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          else{
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/3+d3.pointer(mouse)[0] + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          
+          })
+        .on("mouseout", function () {
+          tooltip.style("opacity", 0).style("left", 0).style("top", 0);
+        });
 
     svg
       .append("line")
@@ -815,7 +881,29 @@ function drawBox(skeys, stats, total_max, width, height, svg) {
       .attr("x1", division / 4 + i * division) // x position of the first end of the line
       .attr("y1", height - (stats[skeys[i]]["med"] * height) / total_max) // y position of the first end of the line
       .attr("x2", (3 * division) / 4 + i * division) // x position of the second end of the line
-      .attr("y2", height - (stats[skeys[i]]["med"] * height) / total_max);
+      .attr("y2", height - (stats[skeys[i]]["med"] * height) / total_max)
+      .on("mouseover",function(mouse){
+        if(side){
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/2+d3.pointer(mouse)[0]+276 + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          else{
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/3+d3.pointer(mouse)[0] + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          
+          })
+        .on("mouseout", function () {
+          tooltip.style("opacity", 0).style("left", 0).style("top", 0);
+        });
 
     svg
       .append("line")
@@ -823,6 +911,27 @@ function drawBox(skeys, stats, total_max, width, height, svg) {
       .attr("x1", division / 2 + i * division) // x position of the first end of the line
       .attr("y1", height - (stats[skeys[i]]["min"] * height) / total_max) // y position of the first end of the line
       .attr("x2", division / 2 + i * division) // x position of the second end of the line
-      .attr("y2", height - (stats[skeys[i]]["max"] * height) / total_max);
+      .attr("y2", height - (stats[skeys[i]]["max"] * height) / total_max).on("mouseover",function(mouse){
+        if(side){
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/2+d3.pointer(mouse)[0]+276 + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          else{
+          tooltip
+          .style("opacity", 1)
+          .html("Minimum: "+stats[skeys[i]]["min"].toFixed(2)+"<br>Q1: "+stats[skeys[i]]["q1"].toFixed(2)+"<br>Median:"+stats[skeys[i]]["med"].toFixed(2)+"<br>Q3: "+stats[skeys[i]]["q3"].toFixed(2)+"<br>Max: "+stats[skeys[i]]["max"].toFixed(2))
+          .style("left", window.screen.width/3+d3.pointer(mouse)[0] + "px")
+          .style("top", d3.pointer(mouse)[1]+500 + "px")
+          .style("color", "black")
+          }
+          
+          })
+        .on("mouseout", function () {
+          tooltip.style("opacity", 0).style("left", 0).style("top", 0);
+        });
   }
 }

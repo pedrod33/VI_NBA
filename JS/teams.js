@@ -84,7 +84,7 @@ function filterTeams(teams, filter, data) {
 }
 
 
-function boxStats(data,stats_wrapper,off_stats,def_stats){
+function boxStats(data,stats_wrapper,off_stats,def_stats,tooltip){
   const off_div = document.createElement("div");
     off_div.style.width = "50%";
     off_div.style.display = "inline-block";
@@ -100,8 +100,8 @@ function boxStats(data,stats_wrapper,off_stats,def_stats){
     def_div.id="def_div";
 
   stats_wrapper.appendChild(def_div);
-  drawBoxPlotTeams(off_stats,data,off_div,"Offensive Stats")
-  drawBoxPlotTeams(def_stats,data,def_div,"Defensive Stats")
+  drawBoxPlotTeams(off_stats,data,off_div,"Offensive Stats",tooltip,false)
+  drawBoxPlotTeams(def_stats,data,def_div,"Defensive Stats",tooltip,true)
 }
 
 function teamsStats(data){
@@ -186,7 +186,7 @@ function teamsStats(data){
     
   drawLineGraphTeams(avg_per_player_data, x_axis, line_graph_div, tooltip, "Team Stats");
 
-  boxStats(avg_per_player_data,stats_wrapper, ["2P","3P","AST","FT","ORB"],["BLK","STL","DRB","PF"])
+  boxStats(avg_per_player_data,stats_wrapper, ["2P","3P","AST","FT","ORB"],["BLK","STL","DRB","PF"],tooltip)
 }
 
 
@@ -318,7 +318,7 @@ function updateGraphs(data, x_axis, id, tooltip,title,from_field,to_field,select
   }
   const stats_wrapper = document.getElementById("stats_wrapper");
   console.log(teams_data)
-  boxStats(teams_data,stats_wrapper, ["2P","3P","AST","FT","ORB"],["BLK","STL","DRB","PF"])
+  boxStats(teams_data,stats_wrapper, ["2P","3P","AST","FT","ORB"],["BLK","STL","DRB","PF"],tooltip)
 
   for (let k=0;k<mins.length;k++){
     const y = d3.scaleLinear()

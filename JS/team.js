@@ -44,8 +44,18 @@ function showTeamHeader(teamId, players){
 }
 
 function showTeamStats(players){
-    console.log(players)
     const team_main = document.getElementById("team_main");
+    const tooltip = d3
+    .select(team_main)
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("position", "absolute");
 
     let def_stats = {"BLK":{},"STL":{},"DRB":{}, "PF":{}};
     let off_stats = {"2P":{},"3P":{},"AST":{},"FT":{},"ORB":{}};
@@ -63,8 +73,8 @@ function showTeamStats(players){
     def_div.style.display = "inline-block";
     def_div.style.height = "50%";
 
-    drawBoxPlot(off_stats, team_data,off_div, "Offensive Stats")
-    drawBoxPlot(def_stats, team_data,def_div, "Defensive Stats")
+    drawBoxPlot(off_stats, team_data,off_div, "Offensive Stats",tooltip,false)
+    drawBoxPlot(def_stats, team_data,def_div, "Defensive Stats",tooltip,true)
     team_main.appendChild(off_div);
     team_main.appendChild(def_div);
 
