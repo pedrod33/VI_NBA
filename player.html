@@ -35,25 +35,78 @@
             <li><p id="player1_age">Age:</p></li>
             <li><p id="player1_position">Position:</p></li>
             <li><p id="player1_team">Team:</p></li>
+            <li>
+              <button id="player1_remove" class="player_remove">&times;</button>
+            </li>
           </ul>
           <ul id="player2_attributes" class="player_attributes second">
             <li><p id="player2_name">Name:</p></li>
             <li><p id="player2_age">Age:</p></li>
             <li><p id="player2_position">Position:</p></li>
             <li><p id="player2_team">Team:</p></li>
+            <li>
+              <button id="player2_remove" class="player_remove">&times;</button>
+            </li>
           </ul>
           <ul id="player3_attributes" class="player_attributes third">
             <li><p id="player3_name">Name:</p></li>
             <li><p id="player3_age">Age:</p></li>
             <li><p id="player3_position">Position:</p></li>
             <li><p id="player3_team">Team:</p></li>
+            <li>
+              <button id="player3_remove" class="player_remove">&times;</button>
+            </li>
           </ul>
-          <secton class="radarPlot">
+          <section class="radarPlot">
             <h2>Players Attributes Comparison</h2>
             <div id="radarPlotContainer"></div>
-          </secton>
+          </section>
+          <section class="barPlot">
+            <h2 id="barPlotTitle"></h2>
+
+            <div class="barPlotFilter">
+              <p>Filter by</p>
+              <select id="barPlotFilter" class="filterSelect">
+                <option value="insideScoring">Inside Scoring</option>
+                <option value="outsideScoring">Outside Scoring</option>
+                <option value="freeThrow">Free Throw</option>
+                <option value="playmaking">Playmaking</option>
+                <option value="rebounding">Rebounding</option>
+                <option value="blocking">Blocking</option>
+                <option value="stealing">Stealing</option>
+              </select>
+            </div>
+
+            <div id="barPlot"></div>
+          </section>
+          <!-- <section class="courtPlot">
+            <h2>Courts</h2>
+            <div id="player1_court" class="player_court first"></div>
+            <div id="player2_court" class="player_court second"></div>
+            <div id="player3_court" class="player_court third"></div>
+          </section> -->
         </section>
       </main>
+
+      <!-- Modal -->
+      <div class="modal" id="modal">
+        <div class="modal-header">
+          <div class="title">Add Player to compare</div>
+          <button data-close-button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form autocomplete="off" class="autocompleteForm">
+            <input
+              class="player_input"
+              placeholder="Search by player name..."
+              type="text"
+              id="player_modal_input"
+            />
+            <ul class="players_list" id="players_modal_list"></ul>
+          </form>
+        </div>
+      </div>
+      <div id="overlay"></div>
     </div>
 
     <!-- BOOTSTRAP -->
@@ -69,6 +122,7 @@
     <script src="./data/teamsData.js"></script>
     <script src="./data/playersData.js"></script>
     <script src="./JS/player.js"></script>
+    <script src="./JS/players.js"></script>
     <script src="./JS/draw.js"></script>
     <script src="./JS/script.js" lang="javascript"></script>
   </body>

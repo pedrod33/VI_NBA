@@ -46,13 +46,23 @@ function getPlayerStats(player, allPlayers) {
   // To convert from number of steals and blocks per game to
   // Defending rating (0-100),
   // We do an optimistic normalization that subtracts the average to the max, so the values are generally higher
-  const defenseStats = allPlayers.map((p) => +p.STL + +p.BLK);
-  const defenseStatsAverage =
-    defenseStats.reduce((a, b) => a + b, 0) / defenseStats.length;
-  const playerDefensiveStates = +player.STL + +player.BLK;
-  const defending =
-    normalize(playerDefensiveStates, defenseStats, defenseStatsAverage / 2) *
+  const blockingStats = allPlayers.map((p) => +p.BLK);
+  const blockingStatsAverage =
+    blockingStats.reduce((a, b) => a + b, 0) / blockingStats.length;
+  const playerBlockingStats = +player.BLK;
+  const blocking =
+    normalize(playerBlockingStats, blockingStats, blockingStatsAverage / 2) *
     100;
+
+  // To convert from number of steals and blocks per game to
+  // Defending rating (0-100),
+  // We do an optimistic normalization that subtracts the average to the max, so the values are generally higher
+  const stealStats = allPlayers.map((p) => +p.STL);
+  const stealStatsAverage =
+    stealStats.reduce((a, b) => a + b, 0) / stealStats.length;
+  const playerStealStats = +player.STL;
+  const stealing =
+    normalize(playerStealStats, stealStats, stealStatsAverage / 2) * 100;
 
   const stats = {
     outsideScoring: round(outsideScoring, 0),
@@ -60,7 +70,8 @@ function getPlayerStats(player, allPlayers) {
     freeThrow: round(freeThrow, 0),
     playmaking: round(playmaking, 0),
     rebounding: round(rebounding, 0),
-    defending: round(defending, 0),
+    blocking: round(blocking, 0),
+    stealing: round(stealing, 0),
   };
 
   function normalize(val, allVal, extraMax = 0) {

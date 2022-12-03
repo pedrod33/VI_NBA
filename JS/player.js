@@ -1,12 +1,56 @@
 function addGeneralInfoPlayer(
+  allPlayers,
   player1 = undefined,
   player2 = undefined,
   player3 = undefined
 ) {
   //Remove cards if there are not all players
-  if (!player1) removeCard("player_attributes");
-  if (!player2) removeCard("player2_attributes");
-  if (!player3) removeCard("player3_attributes");
+  if (!player1) {
+    removeCardInfo("player_attributes");
+    addBtnModal("player_attributes", 1);
+    removeCard("player2_attributes");
+    removeCard("player3_attributes");
+  }
+  if (!player2) {
+    removeCardInfo("player2_attributes");
+    addBtnModal("player2_attributes", 2);
+    removeCard("player3_attributes");
+  }
+  if (!player3) {
+    removeCardInfo("player3_attributes");
+    addBtnModal("player3_attributes", 3);
+  }
+
+  //Add events to the buttons and display only the last one
+  const removeButtons = document.querySelectorAll(".player_remove");
+  for (let i = 0; i < removeButtons.length; i++) {
+    const button = removeButtons[i];
+
+    //Only show the last btn
+    if (i + 1 < removeButtons.length) removeButtons[i].style.display = "none";
+
+    //Add event
+    button.addEventListener("click", () => {
+      const currentURL = window.location.href;
+      //get number to remove
+      const idToRemove = button.id.split("player")[1].split("_")[0];
+
+      //get the id+number to remove
+      const finalIdToRemove = idToRemove === "1" ? "id=" : `id${idToRemove}=`;
+
+      const URLSplitted = currentURL.split("&");
+
+      const elRemoveIndex = URLSplitted.findIndex((part) =>
+        part.startsWith(finalIdToRemove)
+      );
+
+      const elRemoved = URLSplitted.splice(elRemoveIndex, 1);
+
+      window.location.href = URLSplitted.join("&");
+    });
+  }
+
+  // removeButtons.forEach((button) => {});
 
   /* ADD Names */
   //get names
@@ -100,9 +144,61 @@ function addGeneralInfoPlayer(
     refElement.appendChild(elementToAdd);
   }
 
+  function removeCardInfo(ref) {
+    const refElement = document.getElementById(ref);
+
+    //remove child elements
+    let childElement = refElement.lastElementChild;
+    while (childElement) {
+      refElement.removeChild(childElement);
+      childElement = refElement.lastElementChild;
+    }
+  }
+
   function removeCard(ref) {
     const refElement = document.getElementById(ref);
+
     refElement.style.display = "none";
+  }
+
+  function addBtnModal(ref, number) {
+    const refElement = document.getElementById(ref);
+
+    //append wrapper for button and label
+    const wrapper = document.createElement("div");
+    wrapper.className = "button_wrapper";
+
+    //append button element that opens modal
+    const button = document.createElement("button");
+    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#fff" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><line x1="40" y1="128" x2="216" y2="128" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line><line x1="128" y1="40" x2="128" y2="216" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line></svg>`;
+    button.className = "button_add_player";
+    button.setAttribute("data-modal-target", "#modal");
+
+    button.addEventListener("click", () => {
+      const modal = document.querySelector(button.dataset.modalTarget);
+      openModal(modal, number);
+    });
+
+    //create Label
+    const label = document.createElement("p");
+    label.textContent = "Add player to compare";
+    label.className = "add_player_label";
+
+    wrapper.appendChild(button);
+    wrapper.append(label);
+    refElement.append(wrapper);
+  }
+
+  function openModal(modal, number = -1) {
+    if (modal == null) return;
+    modal.classList.add("active");
+    overlay.classList.add("active");
+    autoCompletePlayersName(
+      allPlayers,
+      "player_modal_input",
+      "players_modal_list",
+      number
+    );
   }
 }
 
@@ -135,9 +231,9 @@ function addRadarPlot(
 
   // const container = document.getElementById("radarPlotContainer");
 
-  const w = 400 - 40 - 40;
-  const h = 400 - 40 - 40;
-  const margin = 80;
+  const w = 350;
+  const h = 350;
+  const margin = 120;
   const color = d3.scaleOrdinal().range(["#c92a2a", "#51cf66", "#1864ab"]);
 
   const starCfg = {
@@ -207,4 +303,243 @@ function addRadarPlot(
     [player1, player2, player3],
     labels
   );
+}
+
+function addBarPlot(
+  filter,
+  player1 = undefined,
+  player2 = undefined,
+  player3 = undefined
+) {
+  const filters = {
+    insideScoring: {
+      attr: [
+        { "2PF": "Avg. 2 Points Misses" },
+        { "2P": "Avg. 2 Points Goals" },
+      ],
+      name: "Inside Scoring",
+    },
+    outsideScoring: {
+      attr: [
+        { "3PF": "Avg. 3 Points Misses" },
+        { "3P": "Avg. 3 Points Goals" },
+      ],
+      name: "Outside Scoring",
+    },
+    freeThrow: {
+      attr: [
+        { FTF: "Avg. Free Throw Misses" },
+        { FT: "Avg. Free Throw Goals" },
+      ],
+      name: "Free Throw",
+    },
+    playmaking: { attr: [{ AST: "Avg. Assists" }], name: "Playmaking" },
+    rebounding: {
+      attr: [
+        { ORB: "Avg. Offensive Rebounds" },
+        { DRB: "Avg. Defensive Rebounds" },
+      ],
+      name: "Rebounding",
+    },
+    blocking: { attr: [{ BLK: "Avg. Blocks" }], name: "Blocking" },
+    stealing: { attr: [{ STL: "Avg. Steals" }], name: "Stealing" },
+  };
+
+  const data = [];
+  const selectedFilters = filters[filter].attr;
+
+  const barPlotTitle = document.getElementById("barPlotTitle");
+
+  barPlotTitle.textContent = `${filters[filter].name} Bar Plot`;
+
+  if (player1) {
+    const playerInfo = { Player: player1.Player };
+    selectedFilters.forEach((filter) => {
+      const filterKey = Object.keys(filter)[0];
+      let playerValue = +player1[filterKey];
+
+      if (filterKey === "2PF") playerValue = player1["2PA"] - player1["2P"];
+      if (filterKey === "3PF") playerValue = player1["3PA"] - player1["3P"];
+      if (filterKey === "FTF") playerValue = player1["FTA"] - player1["FT"];
+
+      playerInfo[filterKey] = playerValue;
+    });
+
+    data.push(playerInfo);
+  }
+  if (player2) {
+    const playerInfo = { Player: player2.Player };
+    selectedFilters.forEach((filter) => {
+      const filterKey = Object.keys(filter)[0];
+      let playerValue = +player2[filterKey];
+
+      if (filterKey === "2PF") playerValue = player2["2PA"] - player2["2P"];
+      if (filterKey === "3PF") playerValue = player2["3PA"] - player2["3P"];
+      if (filterKey === "FTF") playerValue = player2["FTA"] - player2["FT"];
+
+      playerInfo[filterKey] = playerValue;
+    });
+
+    data.push(playerInfo);
+  }
+  if (player3) {
+    const playerInfo = { Player: player3.Player };
+    selectedFilters.forEach((filter) => {
+      const filterKey = Object.keys(filter)[0];
+      let playerValue = +player3[filterKey];
+
+      if (filterKey === "2PF") playerValue = player3["2PA"] - player3["2P"];
+      if (filterKey === "3PF") playerValue = player3["3PA"] - player3["3P"];
+      if (filterKey === "FTF") playerValue = player3["FTA"] - player3["FT"];
+
+      playerInfo[filterKey] = playerValue;
+    });
+
+    data.push(playerInfo);
+  }
+
+  console.log("data", data);
+
+  const subgroups = data.map((d) => d.Player);
+  console.log("subgroups", subgroups);
+
+  const g = Object.keys(data[0]).splice(1);
+  const groups = g.map((g, i) => filters[filter].attr[i][g]);
+  console.log("groups", groups);
+
+  let maxValue = 0;
+  data.forEach((d) => {
+    const keys = Object.keys(data[0]);
+    keys.forEach((key) => {
+      if (typeof d[key] === "number" && d[key] > maxValue)
+        maxValue = Math.ceil(d[key]);
+    });
+  });
+
+  console.log("maxValue", maxValue);
+
+  // set the dimensions and margins of the graph
+  // set the dimensions and margins of the graph
+  const margin = { top: 10, right: 80, bottom: 20, left: 50 },
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+  //clear everything inside bar plot Div
+  document.getElementById("barPlot").replaceChildren();
+
+  // append the svg object to the body of the page
+  const svg = d3
+    .select("#barPlot")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right * 2)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Add X axis
+  const x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
+
+  svg
+    .append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x).tickSize(0));
+
+  // Add Y axis
+  const y = d3.scaleLinear().domain([0, maxValue]).range([height, 0]);
+  svg.append("g").call(d3.axisLeft(y));
+
+  // Another scale for subgroup position?
+  const xSubgroup = d3
+    .scaleBand()
+    .domain(subgroups)
+    .range([0, x.bandwidth()])
+    .padding([0.05]);
+  // color palette = one color per subgroup
+  const color = d3
+    .scaleOrdinal()
+    .domain(subgroups)
+    .range(["#c92a2a", "#51cf66", "#1864ab"]);
+
+  // ----------------
+  // Create a tooltip
+  // ----------------
+  const tooltip = d3
+    .select("#barPlot")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px");
+
+  // Three function that change the tooltip when user hover / move / leave a cell
+  // Three function that change the tooltip when user hover / move / leave a cell
+  const mouseover = function (event, d) {
+    console.log("event", event);
+    const subgroupName = d.key;
+    const subgroupValue = d.value;
+
+    tooltip
+      .html(
+        "Name: " +
+          subgroupName +
+          "<br>" +
+          "Value: " +
+          Number.parseFloat(subgroupValue).toFixed(1)
+      )
+      .style("opacity", 1)
+      .style("color", "#000");
+  };
+  const mousemove = function (event, d) {
+    tooltip
+      .style("transform", "translateY(-55%)")
+      .style("left", event.x / 2 + "px")
+      .style("top", event.y / 2 - 30 + "px");
+  };
+  const mouseleave = function (event, d) {
+    tooltip.style("opacity", 0);
+  };
+
+  // // Show the bars
+  svg
+    .append("g")
+    .selectAll("g")
+    // Enter in data = loop group per group
+    .data(selectedFilters)
+    .join("g")
+    .attr("transform", (d) => `translate(${x(Object.values(d)[0])}, 0)`)
+    .selectAll("rect")
+    .data(function (d) {
+      return subgroups.map(function (key, i) {
+        const attr = Object.keys(d)[0];
+        return { key: key, value: data[i][attr] };
+      });
+    })
+    .join("rect")
+    .attr("x", (d) => xSubgroup(d.key))
+    .attr("y", (d) => y(d.value))
+    .attr("width", xSubgroup.bandwidth())
+    .attr("height", (d) => height - y(d.value))
+    .attr("fill", (d) => color(d.key))
+    .on("mouseover", mouseover)
+    .on("mousemove", mousemove)
+    .on("mouseleave", mouseleave);
+
+  for (let i = 0; i < subgroups.length; i++) {
+    svg
+      .append("rect")
+      .style("fill", color(subgroups[i]))
+      .attr("x", width - margin.right + 120)
+      .attr("y", height / 2 + 30 * i)
+      .attr("width", 15)
+      .attr("height", 15);
+    svg
+      .append("text")
+      .attr("x", width - margin.right + 120 + 21)
+      .attr("y", height / 2 + 11 + 30 * i)
+      .attr("text-anchor", "start")
+      .text(subgroups[i]);
+  }
 }

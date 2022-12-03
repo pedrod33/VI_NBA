@@ -1,9 +1,9 @@
-function autoCompletePlayersName(players) {
+function autoCompletePlayersName(players, inputRef, listRef, compareId = -1) {
   //get Array with Players names and sort
   const playersNames = players.map((p) => p.Player).sort();
 
   //reference
-  let playerInput = document.getElementById("player_input");
+  let playerInput = document.getElementById(inputRef);
 
   //Execute function on keyup
   playerInput.addEventListener("keyup", () => {
@@ -30,14 +30,28 @@ function autoCompletePlayersName(players) {
         rest.textContent = player.substr(playerInput.value.length);
 
         //Create link element that contains player name
-        const playerLink = document.createElement("a");
-        playerLink.href = `./player.html?id=${player}`;
+        const playerLink =
+          compareId === -1
+            ? document.createElement("a")
+            : document.createElement("p");
+
+        //if a compareId is sent, it means it comes from the modal, and it will be a button that appends player to url
+        if (compareId === -1) {
+          playerLink.href = `./player.html?&id=${player}`;
+        } else {
+          playerLink.addEventListener("click", () => {
+            const currentURL = window.location.href;
+            window.location.href = `${currentURL}&id${
+              compareId === 1 ? "" : compareId
+            }=${player}`;
+          });
+        }
         playerLink.appendChild(match);
         playerLink.appendChild(rest);
 
         //add link to listItem and add it to the global List
         listItem.appendChild(playerLink);
-        const playersList = document.getElementById("players_list");
+        const playersList = document.getElementById(listRef);
         playersList.appendChild(listItem);
       }
     }
