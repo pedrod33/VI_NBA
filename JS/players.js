@@ -223,3 +223,156 @@ function addParalelPlayersPlot(data, filters) {
     })
     .style("fill", "white");
 }
+
+function addBoxPlotPlayers(data, filters, stats, id) {
+  //clear everything inside bar plot Div
+  document.getElementById(id).replaceChildren();
+
+  console.log("filters", filters);
+
+  //filter by team
+  data = data.filter((d) => filters.teams.includes(d.Tm));
+
+  //filter by position
+  if (filters.position !== "all")
+    data = data.filter((d) => filters.position === d.Pos);
+
+  const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+    width = 460 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+  const svg = d3
+    .select(`#${id}`)
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("fill", "white")
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  let skeys = Object.keys(stats);
+  let max_val,
+    min_val,
+    med_val,
+    q1_val,
+    q3_val,
+    total_max = -1;
+
+  for (let i = 0; i < skeys.length; i++) {
+    const currentData = data.map((d) => +d[skeys[i]]);
+
+    currentData.sort(function (a, b) {
+      return a - b;
+    });
+
+    // let d_stats = data[skeys[i]];
+    min_val = Math.min(...currentData);
+    max_val = Math.max(...currentData);
+
+    if (max_val > total_max) {
+      total_max = max_val;
+    }
+    if (currentData.length % 2)
+      med_val = currentData[Math.floor(currentData.length / 2)];
+    else {
+      med_val =
+        (currentData[currentData.length / 2] +
+          currentData[currentData.length / 2 - 1]) /
+        2;
+    }
+
+    if (currentData.length % 4) {
+      q1_val = currentData[Math.floor(currentData.length / 4)];
+      q3_val = currentData[Math.floor((currentData.length * 3) / 4)];
+    } else {
+      q1_val =
+        (currentData[currentData.length / 4] +
+          currentData[currentData.length / 4 - 1]) /
+        2;
+      q3_val =
+        (currentData[(currentData.length * 3) / 4] +
+          currentData[(currentData.length * 3) / 4 - 1]) /
+        2;
+    }
+    console.log(
+      "min:",
+      min_val,
+      "q1:",
+      q1_val,
+      "med:",
+      med_val,
+      "q3:",
+      q3_val,
+      "max:",
+      max_val
+    );
+    stats[skeys[i]]["min"] = min_val;
+    stats[skeys[i]]["q1"] = q1_val;
+    stats[skeys[i]]["med"] = med_val;
+    stats[skeys[i]]["q3"] = q3_val;
+    stats[skeys[i]]["max"] = max_val;
+  }
+  let x = d3.scaleBand().range([0, width]).domain(skeys);
+  svg
+    .append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x).ticks(5));
+
+  // Add Y axis
+  total_max = Math.ceil(total_max);
+  const y = d3.scaleLinear().domain([0, total_max]).range([height, 0]);
+
+  svg.append("g").call(d3.axisLeft(y));
+
+  drawBox(skeys, stats, total_max, width, height, svg);
+
+  //auxiliar to drawBoxPlot
+  function drawBox(skeys, stats, total_max, width, height, svg) {
+    let division = width / skeys.length;
+    for (let i = 0; i < skeys.length; i++) {
+      svg
+        .append("rect")
+        .attr("x", division / 4 + division * i)
+        .attr("y", height - height * (stats[skeys[i]]["q3"] / total_max))
+        .attr("width", division / 2)
+        .attr(
+          "height",
+          (height * (stats[skeys[i]]["q3"] - stats[skeys[i]]["q1"])) / total_max
+        )
+        .attr("stroke", "black")
+        .attr("fill", "#69a3b2");
+
+      svg
+        .append("line")
+        .style("stroke", "white") // colour the line
+        .attr("x1", division / 2 - division / 10 + i * division) // x position of the first end of the line
+        .attr("y1", height - (stats[skeys[i]]["min"] * height) / total_max) // y position of the first end of the line
+        .attr("x2", division / 2 + division / 10 + i * division) // x position of the second end of the line
+        .attr("y2", height - (stats[skeys[i]]["min"] * height) / total_max);
+
+      svg
+        .append("line")
+        .style("stroke", "white") // colour the line
+        .attr("x1", division / 2 - division / 10 + i * division) // x position of the first end of the line
+        .attr("y1", height - (stats[skeys[i]]["max"] * height) / total_max) // y position of the first end of the line
+        .attr("x2", division / 2 + division / 10 + i * division) // x position of the second end of the line
+        .attr("y2", height - (stats[skeys[i]]["max"] * height) / total_max);
+
+      svg
+        .append("line")
+        .style("stroke", "white") // colour the line
+        .attr("x1", division / 4 + i * division) // x position of the first end of the line
+        .attr("y1", height - (stats[skeys[i]]["med"] * height) / total_max) // y position of the first end of the line
+        .attr("x2", (3 * division) / 4 + i * division) // x position of the second end of the line
+        .attr("y2", height - (stats[skeys[i]]["med"] * height) / total_max);
+
+      svg
+        .append("line")
+        .style("stroke", "white") // colour the line
+        .attr("x1", division / 2 + i * division) // x position of the first end of the line
+        .attr("y1", height - (stats[skeys[i]]["min"] * height) / total_max) // y position of the first end of the line
+        .attr("x2", division / 2 + i * division) // x position of the second end of the line
+        .attr("y2", height - (stats[skeys[i]]["max"] * height) / total_max);
+    }
+  }
+}

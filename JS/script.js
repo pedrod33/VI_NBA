@@ -23,18 +23,31 @@ async function main(page) {
       //Add form that contains an auto complete input
       autoCompletePlayersName(data, "player_input", "players_list");
 
+      //add Plots after events
       const positionFilter = document.getElementById("parallelPosition");
       positionFilter.addEventListener("change", () => {
         const teams = filterTeams();
         const position = filterPosition();
-
-        console.log("entrei", teams, "------", position);
 
         addParalelPlayersPlot(data, {
           position,
           teams,
           age: { min: 0, max: Infinity },
         });
+
+        addBoxPlotPlayers(
+          data,
+          { position, teams },
+          { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
+          "boxPlotAttack"
+        );
+
+        addBoxPlotPlayers(
+          data,
+          { position, teams },
+          { BLK: {}, STL: {}, DRB: {}, PF: {} },
+          "boxPlotDefense"
+        );
       });
 
       const teamSelectFilter = document.getElementById("parallelTeam");
@@ -65,14 +78,102 @@ async function main(page) {
             teams,
             age: { min: 0, max: Infinity },
           });
+
+          addBoxPlotPlayers(
+            data,
+            { position, teams },
+            { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
+            "boxPlotAttack"
+          );
+
+          addBoxPlotPlayers(
+            data,
+            { position, teams },
+            { BLK: {}, STL: {}, DRB: {}, PF: {} },
+            "boxPlotDefense"
+          );
         });
       }
 
+      const minAgeInput = document.getElementById("min_age");
+      const maxAgeInput = document.getElementById("max_age");
+
+      minAgeInput.addEventListener("keyup", () => {
+        const { min, max } = filterByAge();
+        const teams = filterTeams();
+        const position = filterPosition();
+
+        //add default
+        addParalelPlayersPlot(data, {
+          position,
+          teams,
+          age: { min, max },
+        });
+
+        addBoxPlotPlayers(
+          data,
+          { position, teams, age: { min, max } },
+          { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
+          "boxPlotAttack"
+        );
+
+        addBoxPlotPlayers(
+          data,
+          { position, teams, age: { min, max } },
+          { BLK: {}, STL: {}, DRB: {}, PF: {} },
+          "boxPlotDefense"
+        );
+      });
+
+      maxAgeInput.addEventListener("keyup", () => {
+        const { min, max } = filterByAge();
+        const teams = filterTeams();
+        const position = filterPosition();
+
+        //add default
+        addParalelPlayersPlot(data, {
+          position,
+          teams,
+          age: { min, max },
+        });
+
+        addBoxPlotPlayers(
+          data,
+          { position, teams, age: { min, max } },
+          { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
+          "boxPlotAttack"
+        );
+
+        addBoxPlotPlayers(
+          data,
+          { position, teams, age: { min, max } },
+          { BLK: {}, STL: {}, DRB: {}, PF: {} },
+          "boxPlotDefense"
+        );
+      });
+
+      const minGamesInput = document.getElementById("min_games");
+      const maxGamesInput = document.getElementById("max_games");
+
+      //add default
       addParalelPlayersPlot(data, {
         position: "all",
         teams: Object.keys(teams),
-        age: { min: 0, max: Infinity },
       });
+
+      addBoxPlotPlayers(
+        data,
+        { position: "all", teams: Object.keys(teams) },
+        { "2P": {}, "3P": {}, AST: {}, FT: {}, ORB: {} },
+        "boxPlotAttack"
+      );
+
+      addBoxPlotPlayers(
+        data,
+        { position: "all", teams: Object.keys(teams) },
+        { BLK: {}, STL: {}, DRB: {}, PF: {} },
+        "boxPlotDefense"
+      );
 
       //helper functions
       const filterTeams = () => {
@@ -95,6 +196,26 @@ async function main(page) {
           positionFilter.options[positionFilter.selectedIndex].value;
 
         return selectedOption;
+      };
+
+      const filterByAge = () => {
+        let min = minAgeInput.value;
+        let max = maxAgeInput.value;
+
+        if (!min) min = -1;
+        if (!max) max = 99999999;
+
+        return { min: +min, max: +max };
+      };
+
+      const filterByGames = () => {
+        let min = minGamesInput.value;
+        let max = maxGamesInput.value;
+
+        if (!min) min = -1;
+        if (!max) max = 99999999;
+
+        return { min: +min, max: +max };
       };
 
       break;
