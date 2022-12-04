@@ -388,7 +388,6 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
 
   let x = d3.scalePoint().range([0, width]).domain(Object.keys(dimensions));
 
-
   const dkeys = Object.keys(data);
   let maxes = [];
   let mins = [];
@@ -396,8 +395,8 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
 
   for (let i in Object.keys(dimensions)) {
     const dimension = Object.keys(dimensions)[i];
-    console.log(dimension)
-    console.log(data)
+    console.log(dimension);
+    console.log(data);
     //const dimensionArray = data.map((d) => +d[dimension]);
     //const dimensionDomain = d3.extent(dimensionArray);
 
@@ -412,7 +411,7 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
       .domain([Math.floor(min), Math.ceil(max)])
       .range([0, height]);
   }
-  console.log(y)
+  console.log(y);
   //tm = Math.ceil(tm+1);
   // Add Y axis
 
@@ -439,13 +438,14 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
       points.push({
         y:
           height -
-          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
+          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) /
+            (maxes[i] - mins[i]),
         x: d * i,
       });
     }
 
     svg
-    .selectAll("myAxis")
+      .selectAll("myAxis")
       // For each dimension of the dataset I add a 'g' element:
       .data(Object.keys(dimensions))
       .enter()
@@ -494,7 +494,33 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
 
         tooltip
           .style("opacity", 1)
-          .html("Player: " + player["Player"])
+          .html(
+            "Player: " +
+              player["Player"] +
+              "<br/> Games: " +
+              player["G"] +
+              "<br/> Average 3P%: " +
+              player["3P%"] +
+              "<br/> Average 2P%: " +
+              player["2P%"] +
+              "<br/> Average FT%: " +
+              player["FT%"] +
+              "<br/> Average Rebounds: " +
+              player["TRB"] +
+              "<br/> Average Assists: " +
+              player["AST"] +
+              "<br/> Average Steals: " +
+              player["STL"] +
+              "<br/> Average Blocks: " +
+              player["BLK"] +
+              "<br/> Average Turnovers: " +
+              player["TOV"] +
+              "<br/> Average Fouls: " +
+              player["PF"] +
+              "<br/> Average Points: " +
+              player["PTS"] +
+              "<br/><br/> <b>Click to see player Stats</b>"
+          )
           .style("left", "0")
           .style("top", "0")
           .style("color", "black");
@@ -567,7 +593,7 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
   };
 
   let x = d3.scalePoint().range([0, width]).domain(Object.keys(dimensions));
-  
+
   const dkeys = Object.keys(data);
   let maxes = [];
   let mins = [];
@@ -575,8 +601,8 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
 
   for (let i in Object.keys(dimensions)) {
     const dimension = Object.keys(dimensions)[i];
-    console.log(dimension)
-    console.log(data)
+    console.log(dimension);
+    console.log(data);
     //const dimensionArray = data.map((d) => +d[dimension]);
     //const dimensionDomain = d3.extent(dimensionArray);
 
@@ -593,7 +619,7 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
   }
 
   svg
-  .selectAll("myAxis")
+    .selectAll("myAxis")
     // For each dimension of the dataset I add a 'g' element:
     .data(Object.keys(dimensions))
     .enter()
@@ -605,7 +631,6 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
     })
     // And I build the axis with the call function
     .each(function (d) {
-      
       d3.select(this).call(d3.axisLeft().ticks(5).scale(y[d]));
     })
     // Add axis title
@@ -645,7 +670,8 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
       points.push({
         y:
           height -
-          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
+          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) /
+            (maxes[i] - mins[i]),
         x: d * i,
       });
     }
