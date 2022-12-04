@@ -388,7 +388,6 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
 
   let x = d3.scalePoint().range([0, width]).domain(Object.keys(dimensions));
 
-
   const dkeys = Object.keys(data);
   let maxes = [];
   let mins = [];
@@ -396,8 +395,8 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
 
   for (let i in Object.keys(dimensions)) {
     const dimension = Object.keys(dimensions)[i];
-    console.log(dimension)
-    console.log(data)
+    console.log(dimension);
+    console.log(data);
     //const dimensionArray = data.map((d) => +d[dimension]);
     //const dimensionDomain = d3.extent(dimensionArray);
 
@@ -412,7 +411,6 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
       .domain([Math.floor(min), Math.ceil(max)])
       .range([height, 0]);
   }
-  console.log(maxes)
   //tm = Math.ceil(tm+1);
   // Add Y axis
 
@@ -439,7 +437,8 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
       points.push({
         y:
           height -
-          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
+          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) /
+            (maxes[i] - mins[i]),
         x: d * i,
       });
     }
@@ -448,7 +447,7 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
     }
 
     svg
-    .selectAll("myAxis")
+      .selectAll("myAxis")
       // For each dimension of the dataset I add a 'g' element:
       .data(Object.keys(dimensions))
       .enter()
@@ -595,7 +594,7 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
   };
 
   let x = d3.scalePoint().range([0, width]).domain(Object.keys(dimensions));
-  
+
   const dkeys = Object.keys(data);
   let maxes = [];
   let mins = [];
@@ -619,7 +618,7 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
   }
   console.log(maxes)
   svg
-  .selectAll("myAxis")
+    .selectAll("myAxis")
     // For each dimension of the dataset I add a 'g' element:
     .data(Object.keys(dimensions))
     .enter()
@@ -631,7 +630,6 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
     })
     // And I build the axis with the call function
     .each(function (d) {
-      
       d3.select(this).call(d3.axisLeft().ticks(5).scale(y[d]));
     })
     // Add axis title
@@ -670,7 +668,8 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
       points.push({
         y:
           height -
-          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
+          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) /
+            (maxes[i] - mins[i]),
         x: d * i,
       });
     }
