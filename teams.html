@@ -37,8 +37,49 @@
             type="text"
             id="team_input"
           />
+          <ul class="team_list" id="team_list"></ul>
         </form>
-        <div class="teams_content" id="teams_content"></div>
+        <section class="allTeamsComparison">
+          <div id="teamsFilters" class="teamsFilters">
+            <p>Filter by:</p>
+            <select id="filter_selection">
+              <option value="Age">Average Age</option>
+              <option value="PTS">Average Points</option>
+              <option value="BLK">Average Blocks</option>
+              <option value="AST">Average Assists</option>
+              <option value="TOV">Average Turnovers</option>
+              <option value="TRB">Average Rebounds</option>
+            </select>
+
+            <div class="numberInput">
+              <div>
+                <div>
+                  <p>From</p>
+                  <input type="number" id="from_field" min="0" />
+                </div>
+                <div>
+                  <p>To</p>
+                  <input type="number" id="to_field" max="150" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <section class="paralelTeamsSection" style="position: relative">
+            <h2>All Teams Comparison</h2>
+            <div id="team_line_graph_id"></div>
+          </section>
+          <section class="boxPlotSection">
+            <div>
+              <h2>Distribution of Team Attacking Stats</h2>
+              <div id="off_div"></div>
+            </div>
+
+            <div>
+              <h2>Distribution of Team Defensive Stats</h2>
+              <div id="def_div"></div>
+            </div>
+          </section>
+        </section>
       </main>
     </div>
 

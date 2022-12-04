@@ -1,7 +1,72 @@
-.team_main > h1 {
-    font-size: 3.2rem;
-    margin-bottom: 4.8rem;
-    color: #fff;
-    display: flex;
-    height: 100%;
-  }
+.team_main {
+  color: #fff;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2.4rem;
+}
+
+.teamInfoDiv {
+  grid-column: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+}
+
+.teamInfoDiv h1 {
+  font-size: 3.2rem;
+  color: #fff;
+}
+
+.teamInfoDiv img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 30rem;
+  min-width: 20rem;
+}
+
+.paralelPlayersSection {
+  grid-column: 3 / 9;
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+
+  background-color: #d3d3d310;
+  border-radius: 1rem;
+  padding: 1.2rem 2.4rem;
+}
+
+.paralelPlayersSection > h2 {
+  color: #fff;
+  font-size: 2.4rem;
+}
+
+.boxPlotSection {
+  grid-column: 1 / 9;
+  display: grid;
+  gap: 2.4rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.boxPlotSection > div {
+  background-color: #d3d3d310;
+  border-radius: 1rem;
+  padding: 1.2rem 0;
+}
+
+.boxPlotSection > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+/* .team_main #team_line_graph_id {
+  grid-column: 3 / 9;
+}
+
+.team_main #def_div,
+.team_main #off_div {
+  grid-column: span 4;
+} */
