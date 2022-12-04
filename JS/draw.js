@@ -443,6 +443,9 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
         x: d * i,
       });
     }
+    for (let i = 0; i < Object.keys(data).length; i++) {
+      player[Object.keys(data)[i]] = data[Object.keys(data)[i]][k]
+    }
 
     svg
     .selectAll("myAxis")
@@ -491,10 +494,36 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
           .attr("stroke", "red")
           .attr("opacity", "1")
           .attr("stroke-width", 3);
-
-        tooltip
+          console.log(player)
+          tooltip
           .style("opacity", 1)
-          .html("Player: " + player["Player"])
+          .html(
+            "Player: " +
+              player["Player"] +
+              "<br/> Games: " +
+              player["G"] +
+              "<br/> Average 3P%: " +
+              player["3P%"] +
+              "<br/> Average 2P%: " +
+              player["2P%"] +
+              "<br/> Average FT%: " +
+              player["FT%"] +
+              "<br/> Average Rebounds: " +
+              player["TRB"] +
+              "<br/> Average Assists: " +
+              player["AST"] +
+              "<br/> Average Steals: " +
+              player["STL"] +
+              "<br/> Average Blocks: " +
+              player["BLK"] +
+              "<br/> Average Turnovers: " +
+              player["TOV"] +
+              "<br/> Average Fouls: " +
+              player["PF"] +
+              "<br/> Average Points: " +
+              player["PTS"] +
+              "<br/><br/> <b>Click to see player Stats</b>"
+          )
           .style("left", "0")
           .style("top", "0")
           .style("color", "black");
