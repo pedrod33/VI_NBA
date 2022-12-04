@@ -358,7 +358,21 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
-
+  const dimensions = {
+    // Rk: "Rank",
+    Age: "Age",
+    G: "Games",
+    "3P%": "Avg. 3P%",
+    "2P%": "Avg. 2P%",
+    "FT%": "Avg. FT%",
+    TRB: "Avg. Rebounds",
+    AST: "Avg. Assists",
+    STL: "Avg. Steals",
+    BLK: "Avg. Blocks",
+    TOV: "Avg. Turnovers",
+    PF: "Avg. Fouls",
+    PTS: "Avg. Points",
+  };
   // svg
   //   .append("text")
   //   .text(title)
@@ -372,19 +386,33 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
   // group the data: I want to draw one line per group
   // Add X axis --> it is a date format
 
-  let x = d3.scalePoint().range([0, width]).domain(x_axis);
-  svg
-    .append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).ticks(5));
+  let x = d3.scalePoint().range([0, width]).domain(Object.keys(dimensions));
+
 
   const dkeys = Object.keys(data);
   let maxes = [];
   let mins = [];
-  for (let i = 0; i < x_axis.length; i++) {
-    maxes.push(Math.max(...data[x_axis[i]]));
-    mins.push(Math.min(...data[x_axis[i]]));
+  const y = {};
+
+  for (let i in Object.keys(dimensions)) {
+    const dimension = Object.keys(dimensions)[i];
+    console.log(dimension)
+    console.log(data)
+    //const dimensionArray = data.map((d) => +d[dimension]);
+    //const dimensionDomain = d3.extent(dimensionArray);
+
+    let min = Math.max(...data[dimension]);
+    let max = Math.min(...data[dimension]);
+
+    console.log("MIN", min);
+    maxes.push(min);
+    mins.push(max);
+    y[dimension] = d3
+      .scaleLinear()
+      .domain([Math.floor(min), Math.ceil(max)])
+      .range([0, height]);
   }
+  console.log(y)
   //tm = Math.ceil(tm+1);
   // Add Y axis
 
@@ -393,7 +421,7 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
   // .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
 
   // Draw the line
-  let d = width / (x_axis.length - 1);
+  let d = width / (Object.keys(dimensions).length - 1);
   for (let k = 0; k < data[x_axis[0]].length; k++) {
     // svg.append("line")
     //   .style("stroke", '#e41a1c')  // colour the line
@@ -405,16 +433,41 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
 
     let points = [];
     let player = {};
-    for (let i = 0; i < x_axis.length; i++) {
+    for (let i = 0; i < Object.keys(dimensions).length; i++) {
       // console.log(data[x_axis[i]][k]>=mins[i])
       // console.log(data[x_axis[i]][k]<=maxes[i])
       points.push({
         y:
           height -
-          ((data[x_axis[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
+          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
         x: d * i,
       });
     }
+
+    svg
+    .selectAll("myAxis")
+      // For each dimension of the dataset I add a 'g' element:
+      .data(Object.keys(dimensions))
+      .enter()
+      .append("g")
+      .attr("class", "axis")
+      // I translate this element to its right position on the x axis
+      .attr("transform", function (d) {
+        return `translate(${x(d)})`;
+      })
+      // And I build the axis with the call function
+      .each(function (d) {
+        d3.select(this).call(d3.axisLeft().ticks(5).scale(y[d]));
+      })
+      // Add axis title
+      .append("text")
+      .style("text-anchor", "middle")
+      .style("font-size", "8px")
+      .attr("y", height + margin.bottom)
+      .text(function (d) {
+        return dimensions[d];
+      })
+      .style("fill", "white");
     const dkeys = Object.keys(data);
     for (let i = 0; i < dkeys.length; i++) {
       player[dkeys[i]] = data[dkeys[i]][k];
@@ -459,14 +512,14 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
         event.stopPropagation();
       });
   }
-  for (let k = 0; k < mins.length; k++) {
-    const y = d3.scaleLinear().domain([mins[k], maxes[k]]).range([height, 0]);
-    svg
-      .append("g")
-      .call(d3.axisLeft(y).ticks(3).tickValues([mins[k], maxes[k]]))
-      .attr("transform", "translate(" + d * k + ",0)")
-      .style("color", "white");
-  }
+  // for (let k = 0; k < mins.length; k++) {
+  //   const y = d3.scaleLinear().domain([mins[k], maxes[k]]).range([height, 0]);
+  //   svg
+  //     .append("g")
+  //     .call(d3.axisLeft(y).ticks(3).tickValues([mins[k], maxes[k]]))
+  //     .attr("transform", "translate(" + d * k + ",0)")
+  //     .style("color", "white");
+  // }
 }
 
 function drawLineGraphTeams(data, x_axis, id, tooltip) {
@@ -497,20 +550,75 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
   // group the data: I want to draw one line per group
   // Add X axis --> it is a date format
 
-  let x = d3.scalePoint().range([0, width]).domain(x_axis);
-  svg
-    .append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).ticks(5))
-    .attr("class", "g-axes");
+  const dimensions = {
+    // Rk: "Rank",
+    Age: "Age",
+    G: "Games",
+    "3P%": "Avg. 3P%",
+    "2P%": "Avg. 2P%",
+    "FT%": "Avg. FT%",
+    TRB: "Avg. Rebounds",
+    AST: "Avg. Assists",
+    STL: "Avg. Steals",
+    BLK: "Avg. Blocks",
+    TOV: "Avg. Turnovers",
+    PF: "Avg. Fouls",
+    PTS: "Avg. Points",
+  };
 
+  let x = d3.scalePoint().range([0, width]).domain(Object.keys(dimensions));
+  
   const dkeys = Object.keys(data);
   let maxes = [];
   let mins = [];
-  for (let i = 0; i < x_axis.length; i++) {
-    maxes.push(Math.max(...data[x_axis[i]]));
-    mins.push(Math.min(...data[x_axis[i]]));
+  const y = {};
+
+  for (let i in Object.keys(dimensions)) {
+    const dimension = Object.keys(dimensions)[i];
+    console.log(dimension)
+    console.log(data)
+    //const dimensionArray = data.map((d) => +d[dimension]);
+    //const dimensionDomain = d3.extent(dimensionArray);
+
+    let min = Math.max(...data[dimension]);
+    let max = Math.min(...data[dimension]);
+
+    console.log("MIN", min);
+    maxes.push(min);
+    mins.push(max);
+    y[dimension] = d3
+      .scaleLinear()
+      .domain([Math.floor(min), Math.ceil(max)])
+      .range([0, height]);
   }
+
+  svg
+  .selectAll("myAxis")
+    // For each dimension of the dataset I add a 'g' element:
+    .data(Object.keys(dimensions))
+    .enter()
+    .append("g")
+    .attr("class", "axis")
+    // I translate this element to its right position on the x axis
+    .attr("transform", function (d) {
+      return `translate(${x(d)})`;
+    })
+    // And I build the axis with the call function
+    .each(function (d) {
+      
+      d3.select(this).call(d3.axisLeft().ticks(5).scale(y[d]));
+    })
+    // Add axis title
+    .append("text")
+    .style("text-anchor", "middle")
+    .style("font-size", "8px")
+    .attr("y", height + margin.bottom)
+    .text(function (d) {
+      console.log("d", d);
+      return dimensions[d];
+    })
+    .style("fill", "white");
+
   //tm = Math.ceil(tm+1);
   // Add Y axis
 
@@ -519,9 +627,8 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
   // .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
 
   // Draw the line
-  let d = width / (x_axis.length - 1);
-
-  for (let k = 0; k < data[x_axis[0]].length; k++) {
+  let d = width / (Object.keys(dimensions).length - 1);
+  for (let k = 0; k < data[Object.keys(dimensions)[0]].length; k++) {
     // svg.append("line")
     //   .style("stroke", '#e41a1c')  // colour the line
     //   .style("opacity","0.7")
@@ -532,13 +639,13 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
 
     let points = [];
     let player = {};
-    for (let i = 0; i < x_axis.length; i++) {
-      // console.log(data[x_axis[i]][k]>=mins[i])
-      // console.log(data[x_axis[i]][k]<=maxes[i])
+    for (let i = 0; i < Object.keys(dimensions).length; i++) {
+      // console.log(data[dimensions[i]][k]>=mins[i])
+      // console.log(data[dimensions[i]][k]<=maxes[i])
       points.push({
         y:
           height -
-          ((data[x_axis[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
+          ((data[Object.keys(dimensions)[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
         x: d * i,
       });
     }
@@ -592,15 +699,15 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
         event.stopPropagation();
       });
   }
-  for (let k = 0; k < mins.length; k++) {
-    const y = d3.scaleLinear().domain([mins[k], maxes[k]]).range([height, 0]);
-    svg
-      .append("g")
-      .call(d3.axisLeft(y).ticks(3).tickValues([mins[k], maxes[k]]))
-      .attr("transform", "translate(" + d * k + ",0)")
-      .attr("class", "g-axes")
-      .style("color", "white");
-  }
+  // for (let k = 0; k < mins.length; k++) {
+  //   const y = d3.scaleLinear().domain([mins[k], maxes[k]]).range([height, 0]);
+  //   svg
+  //     .append("g")
+  //     .call(d3.axisLeft(y).ticks(3).tickValues([mins[k], maxes[k]]))
+  //     .attr("transform", "translate(" + d * k + ",0)")
+  //     .attr("class", "g-axes")
+  //     .style("color", "white");
+  // }
 }
 
 //---------------------------drawBoxPlot---------------------------
