@@ -172,13 +172,13 @@ function teamsStats(data) {
   const def_div = document.getElementById("def_div");
 
   drawBoxPlotTeams(
-    ["2P", "3P", "AST", "FT", "ORB"],
+    ["2P", "3P", "AST", "FT"],
     avg_per_player_data,
     off_div,
     "Offensive Stats"
   );
   drawBoxPlotTeams(
-    ["BLK", "STL", "DRB", "PF"],
+    ["BLK", "STL", "TRB", "PF"],
     avg_per_player_data,
     def_div,
     "Defensive Stats"
@@ -338,13 +338,13 @@ function updateGraphs(
   }
 
   drawBoxPlotTeams(
-    ["2P", "3P", "AST", "FT", "ORB"],
+    ["2P", "3P", "AST", "FT"],
     teams_data,
     off_div,
     "Offensive Stats"
   );
   drawBoxPlotTeams(
-    ["BLK", "STL", "DRB", "PF"],
+    ["BLK", "STL", "TRB", "PF"],
     teams_data,
     def_div,
     "Defensive Stats"
