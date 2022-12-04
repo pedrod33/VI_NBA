@@ -616,7 +616,6 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
       .domain([Math.floor(min), Math.ceil(max)])
       .range([height, 0]);
   }
-  console.log(maxes)
   svg
     .selectAll("myAxis")
     // For each dimension of the dataset I add a 'g' element:
@@ -704,6 +703,26 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
               getTeam(player["Tm"]).name +
               "<br>Number of players: " +
               player["NPlayers"] +
+              "<br/> Average 3P%: " +
+              parseFloat(player["3P%"]).toFixed(2) +
+              "<br/> Average 2P%: " +
+              parseFloat(player["2P%"]).toFixed(2) +
+              "<br/> Average FT%: " +
+              parseFloat(player["FT%"]).toFixed(2) +
+              "<br/> Average Rebounds: " +
+              parseFloat(player["TRB"]).toFixed(2) +
+              "<br/> Average Assists: " +
+              parseFloat(player["AST"]).toFixed(2) +
+              "<br/> Average Steals: " +
+              parseFloat(player["STL"]).toFixed(2) +
+              "<br/> Average Blocks: " +
+              parseFloat(player["BLK"]).toFixed(2) +
+              "<br/> Average Turnovers: " +
+              parseFloat(player["TOV"]).toFixed(2) +
+              "<br/> Average Fouls: " +
+              parseFloat(player["PF"]).toFixed(2) +
+              "<br/> Average Points: " +
+              parseFloat(player["PTS"]).toFixed(2) +
               "<br></br><b>Click to see Team details</b>"
           )
           .style("left", "0")
