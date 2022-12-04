@@ -210,12 +210,12 @@ function updateGraphs(
     "TOV",
     "TRB",
   ];
-
   if (!to_field) to_field = Infinity;
   if (!from_field) from_field = 0;
   if (to_field <= from_field) {
     return;
   }
+  drawLineGraphTeams(data, x_axis, id, tooltip)
 
   d3.selectAll(".team_wrap").remove();
 
@@ -242,12 +242,13 @@ function updateGraphs(
   // group the data: I want to draw one line per group
   // Add X axis --> it is a date format
 
-  let x = d3.scalePoint().range([0, width]).domain(statKeys);
-  svg
-    .append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).ticks(5))
-    .attr("class", "g-axes");
+  // let x = d3.scalePoint().range([0, width]).domain(statKeys);
+  // svg
+  //   .append("g")
+  //   .attr("transform", `translate(0, ${height})`)
+  //   .call(d3.axisBottom(x).ticks(5).padding([0.2]))
+  //   .attr("class", "g-axes")
+  //   .attr("fill","None");
 
   let maxes = [];
   let mins = [];
@@ -354,7 +355,7 @@ function updateGraphs(
     const y = d3.scaleLinear().domain([mins[k], maxes[k]]).range([height, 0]);
     svg
       .append("g")
-      .call(d3.axisLeft(y).ticks(3).tickValues([mins[k], maxes[k]]))
+      .call(d3.axisLeft(y).ticks(3))
       .attr("transform", "translate(" + d * k + ",0)")
       .attr("class", "g-axes")
       .style("color", "white");
