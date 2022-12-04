@@ -1,3 +1,4 @@
+
 function drawRadarPlot(
   id,
   cfg,
@@ -361,7 +362,6 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
   const dimensions = {
     // Rk: "Rank",
     Age: "Age",
-    G: "Games",
     "3P%": "Avg. 3P%",
     "2P%": "Avg. 2P%",
     "FT%": "Avg. FT%",
@@ -400,18 +400,17 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
     //const dimensionArray = data.map((d) => +d[dimension]);
     //const dimensionDomain = d3.extent(dimensionArray);
 
-    let min = Math.max(...data[dimension]);
-    let max = Math.min(...data[dimension]);
+    let max = Math.max(...data[dimension]);
+    let min = Math.min(...data[dimension]);
 
     console.log("MIN", min);
-    maxes.push(min);
-    mins.push(max);
+    maxes.push(max);
+    mins.push(min);
     y[dimension] = d3
       .scaleLinear()
       .domain([Math.floor(min), Math.ceil(max)])
-      .range([0, height]);
+      .range([height, 0]);
   }
-  console.log(y);
   //tm = Math.ceil(tm+1);
   // Add Y axis
 
@@ -443,6 +442,9 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
         x: d * i,
       });
     }
+    for (let i = 0; i < Object.keys(data).length; i++) {
+      player[Object.keys(data)[i]] = data[Object.keys(data)[i]][k]
+    }
 
     svg
       .selectAll("myAxis")
@@ -469,9 +471,9 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
       })
       .style("fill", "white");
     const dkeys = Object.keys(data);
-    for (let i = 0; i < dkeys.length; i++) {
-      player[dkeys[i]] = data[dkeys[i]][k];
-    }
+    // for (let i = 0; i < dkeys.length; i++) {
+    //   player[dkeys[i]] = data[dkeys[i]][k];
+    // }
 
     svg
       .append("path")
@@ -491,8 +493,8 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
           .attr("stroke", "red")
           .attr("opacity", "1")
           .attr("stroke-width", 3);
-
-        tooltip
+          console.log(player)
+          tooltip
           .style("opacity", 1)
           .html(
             "Player: " +
@@ -579,7 +581,6 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
   const dimensions = {
     // Rk: "Rank",
     Age: "Age",
-    G: "Games",
     "3P%": "Avg. 3P%",
     "2P%": "Avg. 2P%",
     "FT%": "Avg. FT%",
@@ -601,23 +602,20 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
 
   for (let i in Object.keys(dimensions)) {
     const dimension = Object.keys(dimensions)[i];
-    console.log(dimension);
-    console.log(data);
+
     //const dimensionArray = data.map((d) => +d[dimension]);
     //const dimensionDomain = d3.extent(dimensionArray);
 
-    let min = Math.max(...data[dimension]);
-    let max = Math.min(...data[dimension]);
+    let max = Math.max(...data[dimension]);
+    let min = Math.min(...data[dimension]);
 
-    console.log("MIN", min);
-    maxes.push(min);
-    mins.push(max);
+    maxes.push(max);
+    mins.push(min);
     y[dimension] = d3
       .scaleLinear()
       .domain([Math.floor(min), Math.ceil(max)])
-      .range([0, height]);
+      .range([height, 0]);
   }
-
   svg
     .selectAll("myAxis")
     // For each dimension of the dataset I add a 'g' element:
@@ -639,7 +637,6 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
     .style("font-size", "8px")
     .attr("y", height + margin.bottom)
     .text(function (d) {
-      console.log("d", d);
       return dimensions[d];
     })
     .style("fill", "white");
@@ -706,6 +703,26 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
               getTeam(player["Tm"]).name +
               "<br>Number of players: " +
               player["NPlayers"] +
+              "<br/> Average 3P%: " +
+              parseFloat(player["3P%"]).toFixed(2) +
+              "<br/> Average 2P%: " +
+              parseFloat(player["2P%"]).toFixed(2) +
+              "<br/> Average FT%: " +
+              parseFloat(player["FT%"]).toFixed(2) +
+              "<br/> Average Rebounds: " +
+              parseFloat(player["TRB"]).toFixed(2) +
+              "<br/> Average Assists: " +
+              parseFloat(player["AST"]).toFixed(2) +
+              "<br/> Average Steals: " +
+              parseFloat(player["STL"]).toFixed(2) +
+              "<br/> Average Blocks: " +
+              parseFloat(player["BLK"]).toFixed(2) +
+              "<br/> Average Turnovers: " +
+              parseFloat(player["TOV"]).toFixed(2) +
+              "<br/> Average Fouls: " +
+              parseFloat(player["PF"]).toFixed(2) +
+              "<br/> Average Points: " +
+              parseFloat(player["PTS"]).toFixed(2) +
               "<br></br><b>Click to see Team details</b>"
           )
           .style("left", "0")
@@ -737,7 +754,7 @@ function drawLineGraphTeams(data, x_axis, id, tooltip) {
 }
 
 //---------------------------drawBoxPlot---------------------------
-function drawBoxPlot(stats, data, id, title) {
+function drawBoxPlot(stats, data, id, titles) {
   const margin = { top: 20, right: 30, bottom: 30, left: 60 },
     width = 460 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
@@ -789,11 +806,12 @@ function drawBoxPlot(stats, data, id, title) {
     stats[skeys[i]]["q3"] = q3_val;
     stats[skeys[i]]["max"] = max_val;
   }
-  let x = d3.scaleBand().range([0, width]).domain(skeys);
+  let x = d3.scaleBand().range([0, width]).domain(titles);
   svg
     .append("g")
     .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).ticks(5));
+    .call(d3.axisBottom(x).ticks(5))
+    .attr("font-size","9px");
 
   // Add Y axis
   total_max = Math.ceil(total_max);
@@ -804,7 +822,7 @@ function drawBoxPlot(stats, data, id, title) {
   drawBox(skeys, stats, total_max, width, height, svg);
 }
 
-function drawBoxPlotTeams(stats, data, id, title) {
+function drawBoxPlotTeams(stats, data, id, titles) {
   const margin = { top: 10, right: 30, bottom: 30, left: 60 },
     width = 350,
     height = 250;
@@ -812,12 +830,12 @@ function drawBoxPlotTeams(stats, data, id, title) {
   const svg = d3
     .select(id)
     .append("svg")
+    .attr("class","box_plot_svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .attr("fill", "white")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
-
   let max_val,
     min_val,
     med_val,
@@ -827,6 +845,7 @@ function drawBoxPlotTeams(stats, data, id, title) {
   let proc_data = {};
   for (let i = 0; i < Object.keys(stats).length; i++) {
     if (typeof data[stats[i]] == "undefined") {
+      console.log(stats[i])
       return;
     }
     let d_stats = structuredClone(data[stats[i]]);
@@ -865,11 +884,13 @@ function drawBoxPlotTeams(stats, data, id, title) {
     proc_data[stats[i]]["q3"] = q3_val;
     proc_data[stats[i]]["max"] = max_val;
   }
-  let x = d3.scaleBand().range([0, width]).domain(stats);
+  let x = d3.scaleBand().range([0, width]).domain(titles);
   svg
     .append("g")
     .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x).ticks(5));
+    .call(d3.axisBottom(x).ticks(5))
+    .style("font-size", "9px");
+
 
   // Add Y axis
   total_max = Math.ceil(total_max);

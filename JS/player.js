@@ -350,7 +350,7 @@ function addBarPlot(
 
   const barPlotTitle = document.getElementById("barPlotTitle");
 
-  barPlotTitle.textContent = `${filters[filter].name} Bar Plot`;
+  barPlotTitle.textContent = `${filters[filter].name} Stats`;
 
   if (player1) {
     const playerInfo = { Player: player1.Player };

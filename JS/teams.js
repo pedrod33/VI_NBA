@@ -159,7 +159,7 @@ function teamsStats(data) {
       select.value
     );
   });
-
+  console.log(avg_per_player_data)
   drawLineGraphTeams(
     avg_per_player_data,
     x_axis,
@@ -175,13 +175,14 @@ function teamsStats(data) {
     ["2P", "3P", "AST", "FT"],
     avg_per_player_data,
     off_div,
-    "Offensive Stats"
+    ["2 Point Goals","3 Point Goals", "Assists per game","Free Throw Goals"]
   );
   drawBoxPlotTeams(
     ["BLK", "STL", "TRB", "PF"],
     avg_per_player_data,
     def_div,
-    "Defensive Stats"
+    ["Blocks per game","Steals per game", "Rebounds per game","Fouls per Game"]
+
   );
 }
 
@@ -195,169 +196,196 @@ function updateGraphs(
   to_field,
   select
 ) {
-  let statKeys = [
-    "Age",
-    "G",
-    "MP",
-    "PTS",
-    "2P",
-    "3P",
-    "AST",
-    "BLK",
-    "FG",
-    "FT",
-    "STL",
-    "TOV",
-    "TRB",
-  ];
+  const dimensions = {
+    // Rk: "Rank",
+    Age: "Age",
+    "3P%": "Avg. 3P%",
+    "3P": "3 Point Goals",
+    "2P%": "Avg. 2P%",
+    "2P": "2 Point Goals",
+    "FT%": "Avg. FT%",
+    "FT": "Free Throw Goals",
+    TRB: "Avg. Rebounds",
+    AST: "Avg. Assists",
+    STL: "Avg. Steals",
+    BLK: "Avg. Blocks",
+    TOV: "Avg. Turnovers",
+    PF: "Avg. Fouls",
+    PTS: "Avg. Points",
+  };
   if (!to_field) to_field = Infinity;
   if (!from_field) from_field = 0;
   if (to_field <= from_field) {
     return;
   }
-  drawLineGraphTeams(data, x_axis, id, tooltip)
+  
+  let cloneData = {}
+  for(let i = 0; i<data[select].length;i++){
+    if(data[select][i]>=from_field && data[select][i]<=to_field){
+      for(let k = 0; k<Object.keys(dimensions).length;k++){
+        if(typeof cloneData[Object.keys(dimensions)[k]]=="undefined"){
+          cloneData[Object.keys(dimensions)[k]] = [data[Object.keys(dimensions)[k]][i]];
+        }
+        else{
+          cloneData[Object.keys(dimensions)[k]].push(data[Object.keys(dimensions)[k]][i]);
+          
+        }
+      }
+    }
+  }
+  console.log(data)
+  console.log(Object.keys(cloneData))
+  if(Object.keys(cloneData).length>0){
+    d3.selectAll(".team_wrap").remove();
+    d3.selectAll(".box_plot_svg").remove();
 
-  d3.selectAll(".team_wrap").remove();
+    drawLineGraphTeams(cloneData, x_axis, id, tooltip)
+    const off_div = document.getElementById("off_div");
+    const def_div = document.getElementById("def_div");
+    console
+    drawBoxPlotTeams(
+      ["2P", "3P", "AST", "FT%"],
+      cloneData,
+      off_div,
+      ["2 Point Goals","3 Point Goals", "Assists per game","Free Throw Goals"]
+      );
+    drawBoxPlotTeams(
+      ["BLK", "STL", "TRB", "PF"],
+      cloneData,
+      def_div,
+      ["Blocks per game","Steals per game", "Rebounds per game","Fouls per Game"]
+      );
+  }
 
-  const off_div = document.getElementById("off_div");
-  const def_div = document.getElementById("def_div");
-  off_div.replaceChildren();
-  def_div.replaceChildren();
 
-  const margin = { top: 25, right: 30, bottom: 30, left: 60 },
-    width = 750,
-    height = 400;
+  // const off_div = document.getElementById("off_div");
+  // const def_div = document.getElementById("def_div");
+  // off_div.replaceChildren();
+  // def_div.replaceChildren();
 
-  // append the svg object to the body of the page
-  const svg = d3
-    .select(id)
-    .append("svg")
-    .attr("class", "team_wrap")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
+  // const margin = { top: 25, right: 30, bottom: 30, left: 60 },
+  //   width = 750,
+  //   height = 400;
 
-  //Read the data
-  // group the data: I want to draw one line per group
-  // Add X axis --> it is a date format
-
-  // let x = d3.scalePoint().range([0, width]).domain(statKeys);
-  // svg
+  // // append the svg object to the body of the page
+  // const svg = d3
+  //   .select(id)
+  //   .append("svg")
+  //   .attr("class", "team_wrap")
+  //   .attr("width", width + margin.left + margin.right)
+  //   .attr("height", height + margin.top + margin.bottom)
   //   .append("g")
-  //   .attr("transform", `translate(0, ${height})`)
-  //   .call(d3.axisBottom(x).ticks(5).padding([0.2]))
-  //   .attr("class", "g-axes")
-  //   .attr("fill","None");
+  //   .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  let maxes = [];
-  let mins = [];
-  for (let i = 0; i < statKeys.length; i++) {
-    maxes.push(Math.max(...data[statKeys[i]]));
-    mins.push(Math.min(...data[statKeys[i]]));
-  }
+  // //Read the data
+  // // group the data: I want to draw one line per group
+  // // Add X axis --> it is a date format
 
-  // Draw the line
-  let d = width / (statKeys.length - 1);
+  // // let x = d3.scalePoint().range([0, width]).domain(statKeys);
+  // // svg
+  // //   .append("g")
+  // //   .attr("transform", `translate(0, ${height})`)
+  // //   .call(d3.axisBottom(x).ticks(5).padding([0.2]))
+  // //   .attr("class", "g-axes")
+  // //   .attr("fill","None");
 
-  let teams_data = {};
+  // let maxes = [];
+  // let mins = [];
+  // for (let i = 0; i < statKeys.length; i++) {
+  //   maxes.push(Math.max(...data[statKeys[i]]));
+  //   mins.push(Math.min(...data[statKeys[i]]));
+  // }
 
-  for (let k = 0; k < data[statKeys[0]].length; k++) {
-    let points = [];
-    let player = {};
+  // // Draw the line
+  // let d = width / (statKeys.length - 1);
 
-    if (
-      parseFloat(data[select][k]) >= from_field &&
-      parseFloat(data[select][k]) <= to_field
-    ) {
-      if (!teams_data[select]) {
-        for (let i = 0; i < x_axis.length; i++) {
-          teams_data[x_axis[i]] = [];
-        }
-      } else {
-        for (let i = 0; i < x_axis.length; i++) {
-          teams_data[x_axis[i]].push(data[x_axis[i]][k]);
-        }
-      }
-      for (let i = 0; i < statKeys.length; i++) {
-        points.push({
-          y:
-            height -
-            ((data[statKeys[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
-          x: d * i,
-        });
-      }
-    }
-    const dkeys = Object.keys(data);
-    for (let i = 0; i < dkeys.length; i++) {
-      player[dkeys[i]] = data[dkeys[i]][k];
-    }
-    svg
-      .append("path")
-      .attr("class", "line-path")
-      .attr("fill", "none")
-      .attr("stroke", "green")
-      .attr("opacity", "0.5")
-      .attr("stroke-width", 1.5)
-      .attr("id", "player" + player["Player"])
-      .attr("d", function (d) {
-        return d3
-          .line()
-          .x((p) => p.x + 1)
-          .y((p) => p.y)(points);
-      })
-      .on("mouseover", function (mouse, i) {
-        d3.select(this)
-          .attr("stroke", "red")
-          .attr("opacity", "1")
-          .attr("stroke-width", 3);
-        tooltip.style("opacity", 1);
-        tooltip
-          .html(
-            "Team: " +
-              getTeam(player["Tm"]).name +
-              "<br>Number of players: " +
-              player["NPlayers"] +
-              "<br></br><b>Click to see Team details</b>"
-          )
-          .style("left", "0")
-          .style("top", "-30px")
-          .style("color", "black");
-      })
-      .on("mouseout", function () {
-        d3.select(this)
-          .attr("stroke", "green")
-          .attr("opacity", "0.5")
-          .attr("stroke-width", 1.5);
+  // let teams_data = {};
 
-        tooltip.style("opacity", 0).style("left", 0).style("top", 0);
-      })
-      .on("click", function (event) {
-        location.href = "team.html?id=" + player["Tm"];
-        event.stopPropagation();
-      });
-  }
+  // for (let k = 0; k < data[statKeys[0]].length; k++) {
+  //   let points = [];
+  //   let player = {};
 
-  drawBoxPlotTeams(
-    ["2P", "3P", "AST", "FT"],
-    teams_data,
-    off_div,
-    "Offensive Stats"
-  );
-  drawBoxPlotTeams(
-    ["BLK", "STL", "TRB", "PF"],
-    teams_data,
-    def_div,
-    "Defensive Stats"
-  );
+  //   if (
+  //     parseFloat(data[select][k]) >= from_field &&
+  //     parseFloat(data[select][k]) <= to_field
+  //   ) {
+  //     if (!teams_data[select]) {
+  //       for (let i = 0; i < x_axis.length; i++) {
+  //         teams_data[x_axis[i]] = [];
+  //       }
+  //     } else {
+  //       for (let i = 0; i < x_axis.length; i++) {
+  //         teams_data[x_axis[i]].push(data[x_axis[i]][k]);
+  //       }
+  //     }
+  //     for (let i = 0; i < statKeys.length; i++) {
+  //       points.push({
+  //         y:
+  //           height -
+  //           ((data[statKeys[i]][k] - mins[i]) * height) / (maxes[i] - mins[i]),
+  //         x: d * i,
+  //       });
+  //     }
+  //   }
+  //   const dkeys = Object.keys(data);
+  //   for (let i = 0; i < dkeys.length; i++) {
+  //     player[dkeys[i]] = data[dkeys[i]][k];
+  //   }
+  //   svg
+  //     .append("path")
+  //     .attr("class", "line-path")
+  //     .attr("fill", "none")
+  //     .attr("stroke", "green")
+  //     .attr("opacity", "0.5")
+  //     .attr("stroke-width", 1.5)
+  //     .attr("id", "player" + player["Player"])
+  //     .attr("d", function (d) {
+  //       return d3
+  //         .line()
+  //         .x((p) => p.x + 1)
+  //         .y((p) => p.y)(points);
+  //     })
+  //     .on("mouseover", function (mouse, i) {
+  //       d3.select(this)
+  //         .attr("stroke", "red")
+  //         .attr("opacity", "1")
+  //         .attr("stroke-width", 3);
+  //       tooltip.style("opacity", 1);
+  //       tooltip
+  //         .html(
+  //           "Team: " +
+  //             getTeam(player["Tm"]).name +
+  //             "<br>Number of players: " +
+  //             player["NPlayers"] +
+  //             "<br></br><b>Click to see Team details</b>"
+  //         )
+  //         .style("left", "0")
+  //         .style("top", "-30px")
+  //         .style("color", "black");
+  //     })
+  //     .on("mouseout", function () {
+  //       d3.select(this)
+  //         .attr("stroke", "green")
+  //         .attr("opacity", "0.5")
+  //         .attr("stroke-width", 1.5);
 
-  for (let k = 0; k < mins.length; k++) {
-    const y = d3.scaleLinear().domain([mins[k], maxes[k]]).range([height, 0]);
-    svg
-      .append("g")
-      .call(d3.axisLeft(y).ticks(3))
-      .attr("transform", "translate(" + d * k + ",0)")
-      .attr("class", "g-axes")
-      .style("color", "white");
-  }
+  //       tooltip.style("opacity", 0).style("left", 0).style("top", 0);
+  //     })
+  //     .on("click", function (event) {
+  //       location.href = "team.html?id=" + player["Tm"];
+  //       event.stopPropagation();
+  //     });
+  // }
+
+
+
+  // for (let k = 0; k < mins.length; k++) {
+  //   const y = d3.scaleLinear().domain([mins[k], maxes[k]]).range([height, 0]);
+  //   svg
+  //     .append("g")
+  //     .call(d3.axisLeft(y).ticks(3))
+  //     .attr("transform", "translate(" + d * k + ",0)")
+  //     .attr("class", "g-axes")
+  //     .style("color", "white");
+  // }
 }
