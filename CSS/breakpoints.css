@@ -63,6 +63,16 @@
   .parallelFilters > :last-child > fieldset > legend {
     grid-column: 1 / 6;
   }
+
+  .allTeamsComparison {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .paralelTeamsSection {
+    width: 65vw;
+    overflow-x: auto;
+  }
 }
 
 /*Below 1200px (Tablets on horizontal) */

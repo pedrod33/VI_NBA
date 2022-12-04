@@ -472,20 +472,11 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
   }
 }
 
-function drawLineGraphTeams(
-  data,
-  x_axis,
-  id,
-  tooltip,
-  title,
-  from_field,
-  to_field
-) {
+function drawLineGraphTeams(data, x_axis, id, tooltip) {
   // set the dimensions and margins of the graph
   const margin = { top: 25, right: 30, bottom: 30, left: 60 },
-    width = 700 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
-  console.log(x_axis);
+    width = 750,
+    height = 400;
   // append the svg object to the body of the page
   const svg = d3
     .select(id)
@@ -496,14 +487,14 @@ function drawLineGraphTeams(
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  svg
-    .append("text")
-    .text(title)
-    .attr("x", width / 2)
-    .attr("y", -10)
-    .attr("text-anchor", "middle")
-    .style("font-size", "20px")
-    .style("fill", "white");
+  // svg
+  //   .append("text")
+  //   .text(title)
+  //   .attr("x", width / 2)
+  //   .attr("y", -10)
+  //   .attr("text-anchor", "middle")
+  //   .style("font-size", "20px")
+  //   .style("fill", "white");
 
   //Read the data
   // group the data: I want to draw one line per group
@@ -584,13 +575,11 @@ function drawLineGraphTeams(
             "Team: " +
               getTeam(player["Tm"]).name +
               "<br>Number of players: " +
-              player["NPlayers"]
+              player["NPlayers"] +
+              "<br></br><b>Click to see Team details</b>"
           )
-          .style(
-            "left",
-            (2 * window.screen.width) / 5 + d3.pointer(mouse)[0] + 76 + "px"
-          )
-          .style("top", d3.pointer(mouse)[1] + 200 + "px")
+          .style("left", "0")
+          .style("top", "-30px")
           .style("color", "black");
       })
       .on("mouseout", function () {
@@ -602,7 +591,7 @@ function drawLineGraphTeams(
         tooltip.style("opacity", 0).style("left", 0).style("top", 0);
       })
       .on("click", function (event) {
-        location.href = "player.html?id=" + player["Player"];
+        location.href = "team.html?id=" + player["Tm"];
         event.stopPropagation();
       });
   }
@@ -694,10 +683,10 @@ function drawBoxPlot(stats, data, id, title) {
 }
 
 function drawBoxPlotTeams(stats, data, id, title) {
-  const margin = { top: 20, right: 30, bottom: 30, left: 60 },
-    width = 460 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
-  console.log(data);
+  const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+    width = 350,
+    height = 250;
+  // console.log(data);
   const svg = d3
     .select(id)
     .append("svg")
@@ -707,14 +696,6 @@ function drawBoxPlotTeams(stats, data, id, title) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  svg
-    .append("text")
-    .text(title)
-    .attr("x", width / 2)
-    .attr("y", 0)
-    .attr("text-anchor", "middle")
-    .style("font-size", "20px")
-    .style("fill", "white");
   let max_val,
     min_val,
     med_val,
@@ -727,7 +708,7 @@ function drawBoxPlotTeams(stats, data, id, title) {
       return;
     }
     let d_stats = structuredClone(data[stats[i]]);
-    console.log(data[stats[i]]);
+    // console.log(data[stats[i]]);
     d_stats.sort(function (a, b) {
       return a - b;
     });

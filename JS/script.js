@@ -182,11 +182,12 @@ async function main(page) {
       addPlots();
 
       break;
-
-    //TODO: Create function for the add plots. Clear this code to be more concise
     case "teams":
       //Add cards with all teams
-      addTeams(data);
+
+      autoCompleteTeamsName(data, "team_input", "team_list");
+      teamsStats(data);
+      // addTeams(data);
       break;
     case "player":
       const currentURL = new URLSearchParams(window.location.search);
@@ -242,10 +243,10 @@ async function main(page) {
       const teamId = new URLSearchParams(window.location.search).get("id");
       let players = [];
       for (let i = 0; i < data.length; i++) {
-        if(data[i].Tm == teamId) players.push(data[i]);
+        if (data[i].Tm == teamId) players.push(data[i]);
       }
-      showTeamHeader(teamId, players)
-      showTeamStats(players)
+      showTeamHeader(teamId, players);
+      showTeamStats(players);
       //addEventListener(teamId, data)
       break;
     default:
