@@ -63,6 +63,8 @@ function showTeamStats(players) {
   const off_div = document.getElementById("boxPlotAttackTeam");
   const def_div = document.getElementById("boxPlotDefenseTeam");
 
-  drawBoxPlot(off_stats, team_data, off_div, "Offensive Stats");
-  drawBoxPlot(def_stats, team_data, def_div, "Defensive Stats");
+  drawBoxPlot(off_stats, team_data, off_div,["2 Point Goals","3 Point Goals", "Assists per game","Free Throw Goals"]
+  );
+  drawBoxPlot(def_stats, team_data, def_div,["Blocks per game","Steals per game", "Rebounds per game","Fouls per Game"]
+  );
 }
