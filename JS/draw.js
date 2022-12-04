@@ -347,8 +347,8 @@ function drawRadarPlot(
 function drawLineGraph(data, x_axis, id, tooltip, title) {
   // set the dimensions and margins of the graph
   const margin = { top: 25, right: 30, bottom: 30, left: 60 },
-    width = 460 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    width = 650,
+    height = 400;
 
   // append the svg object to the body of the page
   const svg = d3
@@ -359,14 +359,14 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  svg
-    .append("text")
-    .text(title)
-    .attr("x", width / 2)
-    .attr("y", -10)
-    .attr("text-anchor", "middle")
-    .style("font-size", "20px")
-    .style("fill", "white");
+  // svg
+  //   .append("text")
+  //   .text(title)
+  //   .attr("x", width / 2)
+  //   .attr("y", -10)
+  //   .attr("text-anchor", "middle")
+  //   .style("font-size", "20px")
+  //   .style("fill", "white");
 
   //Read the data
   // group the data: I want to draw one line per group
@@ -442,11 +442,8 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
         tooltip
           .style("opacity", 1)
           .html("Player: " + player["Player"])
-          .style(
-            "left",
-            window.screen.width / 2 + d3.pointer(mouse)[0] + 76 + "px"
-          )
-          .style("top", d3.pointer(mouse)[1] + 20 + "px")
+          .style("left", "0")
+          .style("top", "0")
           .style("color", "black");
       })
       .on("mouseout", function () {
@@ -621,14 +618,6 @@ function drawBoxPlot(stats, data, id, title) {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  svg
-    .append("text")
-    .text(title)
-    .attr("x", width / 2)
-    .attr("y", 0)
-    .attr("text-anchor", "middle")
-    .style("font-size", "20px")
-    .style("fill", "white");
   let skeys = Object.keys(stats);
   let max_val,
     min_val,

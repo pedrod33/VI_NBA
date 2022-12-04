@@ -73,6 +73,17 @@
     width: 65vw;
     overflow-x: auto;
   }
+
+  .team_main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .team_main > .teamInfoDiv {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 4.8rem;
+  }
 }
 
 /*Below 1200px (Tablets on horizontal) */

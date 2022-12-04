@@ -187,7 +187,6 @@ async function main(page) {
 
       autoCompleteTeamsName(data, "team_input", "team_list");
       teamsStats(data);
-      // addTeams(data);
       break;
     case "player":
       const currentURL = new URLSearchParams(window.location.search);
@@ -236,9 +235,6 @@ async function main(page) {
 
       break;
     case "team":
-      //TODO: On teamsData, create functions to do the calculations for teams statistics
-      //TODO: Create Functions to load d3 visualizations
-
       //get Team ID -> Example: LAL
       const teamId = new URLSearchParams(window.location.search).get("id");
       let players = [];
@@ -247,7 +243,6 @@ async function main(page) {
       }
       showTeamHeader(teamId, players);
       showTeamStats(players);
-      //addEventListener(teamId, data)
       break;
     default:
       break;
