@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@700;900&display=swap");
+
+.paginator {
+  width: 100%;
+  margin: 6.4rem auto 2.4rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.btn-pag {
+  border: 2px solid #fd7e14;
+  border-radius: 50%;
+  background-color: #fff;
+  height: 4rem;
+  width: 4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-pag:hover {
+  background-color: #fd7e14;
+}
+
+.btn-pag:hover .btn--icon {
+  stroke: #fff;
+}
+
+.btn--icon {
+  stroke: #fd7e14;
+  height: 2.4rem;
+  width: 2.4rem;
+}
+
+.pag-number {
+  font-size: 1.8rem;
+  text-decoration: none;
+  color: #fff;
+  height: 4.2rem;
+  width: 4.2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.pag-number:hover,
+.pag-number.number-active {
+  background-color: #fd7e14;
+  color: #fff;
+}
+
+.etc {
+  font-size: 2rem;
+  color: #868e96;
+  margin-bottom: 0;
+}

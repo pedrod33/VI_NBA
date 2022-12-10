@@ -1,0 +1,184 @@
+.main > main > h1 {
+  color: #fff;
+  font-size: 4.8rem;
+  margin-bottom: 9.6rem;
+}
+
+.team_input {
+  width: 50rem;
+  padding: 1.2rem 2.4rem;
+  font-size: 2.2rem;
+  background-color: #ececec;
+  border-radius: 1rem;
+  color: #fd7e14;
+  font-weight: bold;
+  border: 0;
+  margin-bottom: 4.8rem;
+}
+
+.team_input::placeholder {
+  color: rgba(230, 125, 34, 0.8);
+}
+
+.team_input:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.5rem rgba(230, 125, 34, 0.5);
+}
+
+.team_list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 7.2rem;
+}
+
+.tlist-item {
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.tlist-item > a {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4.8rem;
+  min-height: 30rem;
+}
+
+.tlist-item > a:link,
+.tlist-item > a:visited {
+  padding: 2.4rem 1.2rem;
+  border-radius: 1rem;
+  background-color: #3d3d3d;
+  text-align: center;
+  text-decoration: none;
+  font-size: 2rem;
+  transition: all 0.3s;
+}
+
+.tlist-item > a:hover,
+.tlist-item > a:active {
+  box-shadow: 0 0 0 0.2rem rgba(230, 125, 34, 0.8);
+}
+
+.tlist-item > a > img {
+  width: 50%;
+  min-width: 10rem;
+}
+
+.tlist-item > a > p > b {
+  margin: 0;
+  color: #fd7e14;
+}
+
+.tlist-item > a > p > span {
+  margin: 0;
+  color: #fecba1;
+}
+
+.allTeamsComparison {
+  display: grid;
+  grid-template-columns: 1fr 6fr;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 4.8rem;
+  color: #fff;
+}
+
+.teamsFilters {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.teamsFilters > p {
+  font-weight: bold;
+  font-size: 1.2rem;
+  letter-spacing: 1.2px;
+  color: #fff;
+  margin-bottom: 1.2rem;
+}
+
+.teamsFilters > select {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  background-color: #ececec;
+  border-radius: 1rem;
+  color: #fd7e14;
+  font-weight: bold;
+  border: 0;
+  max-width: min-content;
+}
+
+.teamsFilters > select::placeholder {
+  color: rgba(230, 125, 34, 0.8);
+}
+
+.teamsFilters > select::focus {
+  outline: none;
+  box-shadow: 0 0 0 0.5rem rgba(230, 125, 34, 0.5);
+}
+
+.paralelTeamsSection {
+  grid-column: 2 / 3;
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+
+  background-color: #d3d3d310;
+  border-radius: 1rem;
+  padding: 1.2rem 2.4rem;
+}
+
+.paralelTeamsSection > h2 {
+  color: #fff;
+  font-size: 2.4rem;
+}
+
+.boxPlotSection {
+  display: grid;
+  gap: 2.4rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.boxPlotSection > div {
+  background-color: #d3d3d310;
+  border-radius: 1rem;
+  padding: 1.2rem 0;
+}
+
+.boxPlotSection > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+.numberInput > div {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.numberInput > div input {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  background-color: #ececec;
+  border-radius: 1rem;
+  color: #fd7e14;
+  font-weight: bold;
+  border: 0;
+  width: 7rem;
+}
+
+.numberInput > div input::placeholder {
+  color: rgba(230, 125, 34, 0.8);
+}
+
+.numberInput > div input:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.5rem rgba(230, 125, 34, 0.5);
+}

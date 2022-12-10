@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@700;900&display=swap");
+
+main > h1 {
+  color: #fff;
+  font-size: 4.8rem;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 6.4rem;
+}
+
+.introduction {
+  margin-bottom: 12rem;
+}
+
+.introduction > h1 > span {
+  color: #fd7e14;
+}
+
+.introduction > p {
+  color: #fff;
+  font-size: 1.8rem;
+  letter-spacing: -0.5px;
+}
+
+.introduction > p.list-paragraph {
+  margin-left: 3rem;
+}
+
+.introduction > p > span {
+  color: #fd7e14;
+  font-weight: bold;
+}
+
+.homepage-cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4.8rem;
+}
+
+.card:link,
+.card:visited {
+  padding: 2.4rem 1.2rem;
+  border-radius: 1rem;
+  background-color: #3d3d3d;
+  color: #fff;
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: bold;
+  width: 25rem;
+  height: 35rem;
+  text-decoration: none;
+  font-size: 2.4rem;
+  transition: all 0.3s;
+}
+
+.card:hover,
+.card:active {
+  color: #fd7e14;
+}
+
+.card > svg {
+  margin: 2.4rem auto;
+}

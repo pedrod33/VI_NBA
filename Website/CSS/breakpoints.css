@@ -1,0 +1,151 @@
+/*Below 1685px */
+@media (max-width: 105em) {
+  .player_attributes {
+    grid-column: span 3;
+  }
+
+  .player_attributes.first {
+    grid-row: 1/3;
+  }
+  .player_attributes.second {
+    grid-row: 3/5;
+  }
+  .player_attributes.third {
+    grid-row: 5/7;
+  }
+
+  .radarPlot {
+    grid-column: 4 / 11;
+    grid-row: 1 / 7;
+    gap: 0;
+  }
+
+  .barPlot {
+    grid-column: 1 / 11;
+    grid-row: 7 / 13;
+  }
+}
+
+/*Below 1344px (Smaller computers) */
+@media (max-width: 84em) {
+  .allPlayersComparisons {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .paralelPlayersSection > div {
+    width: 65vw;
+    overflow-x: auto;
+  }
+
+  .boxPlotSection {
+    grid-template-columns: 1fr;
+    place-items: center;
+  }
+
+  .parallelFilters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.4rem;
+  }
+
+  .parallelFilters > :last-child {
+    grid-column: 1 / 4;
+    margin-bottom: 4.8rem;
+  }
+
+  .parallelFilters > :last-child > fieldset {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 1.2rem;
+  }
+
+  .parallelFilters > :last-child > fieldset > legend {
+    grid-column: 1 / 6;
+  }
+
+  .allTeamsComparison {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .paralelTeamsSection {
+    width: 65vw;
+    overflow-x: auto;
+  }
+
+  .team_main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .team_main > .teamInfoDiv {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 4.8rem;
+  }
+}
+
+/*Below 1200px (Tablets on horizontal) */
+@media (max-width: 75em) {
+  .main {
+    grid-template-columns: 22rem 1fr;
+  }
+
+  .player_attributes {
+    grid-column: span 3;
+    padding: 0.6rem 1rem;
+    font-size: 1.2rem;
+  }
+
+  .player_attributes.first {
+    grid-row: 1/3;
+  }
+  .player_attributes.second {
+    grid-row: 1/3;
+  }
+  .player_attributes.third {
+    grid-row: 1/3;
+  }
+
+  .radarPlot {
+    grid-column: 1 / 11;
+    grid-row: 3 / 8;
+  }
+
+  .barPlot {
+    grid-column: 1 / 11;
+    grid-row: 8 / 13;
+    grid-template-columns: 1fr;
+  }
+
+  .barPlot > h2 {
+    grid-column: 1;
+  }
+}
+
+/*Below 944px (Tablets on vertical) */
+@media (max-width: 59em) {
+  .teams_list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .parallelFilters > :last-child > fieldset {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .parallelFilters > :last-child > fieldset > legend {
+    grid-column: 1 / 4;
+  }
+}
+
+/*Below 784px (Smaller Tablets) */
+@media (max-width: 49em) {
+  .teams_list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/*Below 560px (Phones) */
+@media (max-width: 35em) {
+}

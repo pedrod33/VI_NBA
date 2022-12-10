@@ -1,0 +1,126 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+
+/*
+SPACING SYSTEM (px)
+2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
+
+FONT SIZE SYSTEM (px)
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98
+
+main color: #fd7e14;
+secondary color: #444;
+background color: #212529;
+*/
+
+/* RESET */
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /*
+  1rem -> 10px. By default this value is defined by each browser, and usually it is 16px
+  font-size: 10px; -> This is not correct to do, because there are users that might have to increase the default value from 16px to something bigger,
+                      and this way we are not allowing them, we are having a static value of 10px
+  Instead:
+  10px / 16px = 0.625 = 62.5% 
+  */
+
+  font-size: 62.5%;
+
+  /* In the media queries, if we use propertys with rem, we then have only to change html font-size, instead of all the properties */
+
+  /* Only works if there is nothing positioned absolutely in the body */
+  overflow-x: hidden;
+  scroll-behavior: smooth; /*Works only on chrome and firefox */
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  color: #444;
+  background-color: #16161d;
+  min-width: 77rem;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 20% 1fr;
+  min-height: 100vh;
+}
+
+main {
+  padding: 4.8rem 2.4rem;
+}
+
+/* Modal */
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: 200ms ease-in-out;
+  border: 1px solid black;
+  border-radius: 1rem;
+  z-index: 10;
+  background-color: #222227;
+  width: 80vw;
+  min-width: 35rem;
+  height: 50vh;
+  display: block;
+  overflow-y: auto;
+}
+
+.modal.active {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid black;
+}
+
+.modal-header .title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.modal-header .close-button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.modal-body {
+  padding: 2.4rem 1.5rem;
+}
+
+#overlay {
+  position: fixed;
+  opacity: 0;
+  transition: 200ms ease-in-out;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+#overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
