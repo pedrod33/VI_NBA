@@ -1,4 +1,3 @@
-
 function drawRadarPlot(
   id,
   cfg,
@@ -432,8 +431,6 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
     let points = [];
     let player = {};
     for (let i = 0; i < Object.keys(dimensions).length; i++) {
-      // console.log(data[x_axis[i]][k]>=mins[i])
-      // console.log(data[x_axis[i]][k]<=maxes[i])
       points.push({
         y:
           height -
@@ -443,7 +440,7 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
       });
     }
     for (let i = 0; i < Object.keys(data).length; i++) {
-      player[Object.keys(data)[i]] = data[Object.keys(data)[i]][k]
+      player[Object.keys(data)[i]] = data[Object.keys(data)[i]][k];
     }
 
     svg
@@ -493,8 +490,9 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
           .attr("stroke", "red")
           .attr("opacity", "1")
           .attr("stroke-width", 3);
-          console.log(player)
-          tooltip
+        console.log(player);
+        console.log("i", i);
+        tooltip
           .style("opacity", 1)
           .html(
             "Player: " +
@@ -551,6 +549,8 @@ function drawLineGraph(data, x_axis, id, tooltip, title) {
 }
 
 function drawLineGraphTeams(data, x_axis, id, tooltip) {
+  console.log("data", data);
+
   // set the dimensions and margins of the graph
   const margin = { top: 25, right: 30, bottom: 30, left: 60 },
     width = 750,
@@ -811,7 +811,7 @@ function drawBoxPlot(stats, data, id, titles) {
     .append("g")
     .attr("transform", `translate(0, ${height})`)
     .call(d3.axisBottom(x).ticks(5))
-    .attr("font-size","9px");
+    .attr("font-size", "9px");
 
   // Add Y axis
   total_max = Math.ceil(total_max);
@@ -830,7 +830,7 @@ function drawBoxPlotTeams(stats, data, id, titles) {
   const svg = d3
     .select(id)
     .append("svg")
-    .attr("class","box_plot_svg")
+    .attr("class", "box_plot_svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .attr("fill", "white")
@@ -845,7 +845,7 @@ function drawBoxPlotTeams(stats, data, id, titles) {
   let proc_data = {};
   for (let i = 0; i < Object.keys(stats).length; i++) {
     if (typeof data[stats[i]] == "undefined") {
-      console.log(stats[i])
+      console.log(stats[i]);
       return;
     }
     let d_stats = structuredClone(data[stats[i]]);
@@ -890,7 +890,6 @@ function drawBoxPlotTeams(stats, data, id, titles) {
     .attr("transform", `translate(0, ${height})`)
     .call(d3.axisBottom(x).ticks(5))
     .style("font-size", "9px");
-
 
   // Add Y axis
   total_max = Math.ceil(total_max);
