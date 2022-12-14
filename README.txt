@@ -1,3 +1,6 @@
+LINK FOR THE GITHUB REPOSITORY
+https://github.com/pedrod33/VI_NBA
+
 In this folder, there is the following content:
 
 - Evaluation Tests
